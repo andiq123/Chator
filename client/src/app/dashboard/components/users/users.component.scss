@@ -1,0 +1,34 @@
+.users {
+  width: 100%;
+  height: 89vh;
+  overflow: auto;
+
+  .user-list {
+    display: flex;
+    flex-flow: column;
+
+    .user {
+      display: flex;
+      flex-flow: row;
+      align-items: flex-start;
+      margin-top: 1vh;
+      cursor: pointer;
+      transition: background-color 100ms ease-in-out;
+      &:hover {
+        background-color: lighten($color: #424242, $amount: 2);
+      }
+      .image-container {
+        width: 100px;
+        img {
+          width: 100%;
+        }
+      }
+
+      .name-container {
+        margin-top: 5vh;
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+    }
+  }
+}

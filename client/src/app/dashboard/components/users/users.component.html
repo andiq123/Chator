@@ -1,0 +1,12 @@
+<div class="users">
+    <mat-card class="user-list">
+        <mat-card *ngFor="let user of users" class="user">
+            <div class="image-container">
+                <img [src]="user.photoURL" [alt]="user.username">
+            </div>
+            <div class="name-container">
+                {{user.username}}
+            </div>
+        </mat-card>
+    </mat-card>
+</div>
