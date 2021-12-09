@@ -7,6 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
+import { FormContainerComponent } from './components/form-container/form-container.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 const MaterialsModules = [
   MatButtonModule,
@@ -19,8 +21,8 @@ const MaterialsModules = [
 ];
 
 @NgModule({
-  declarations: [],
-  imports: [CommonModule],
-  exports: [MaterialsModules],
+  declarations: [FormContainerComponent],
+  imports: [CommonModule, MaterialsModules, ReactiveFormsModule],
+  exports: [MaterialsModules, FormContainerComponent, ReactiveFormsModule],
 })
 export class SharedModule {}

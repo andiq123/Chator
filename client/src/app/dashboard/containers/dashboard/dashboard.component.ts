@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from 'src/app/auth/models/user.interface';
+import { User } from 'src/app/shared/models/user.interface';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,11 +8,15 @@ import { User } from 'src/app/auth/models/user.interface';
 })
 export class DashboardComponent implements OnInit {
   users: User[] = [];
+  user?: User;
+  otherUser?: User;
 
   constructor() {}
 
   ngOnInit(): void {
     this.generateUsers();
+    this.user = this.users[0];
+    this.otherUser = this.users[1];
   }
 
   generateUsers() {
@@ -25,5 +29,9 @@ export class DashboardComponent implements OnInit {
         photoURL: `https://robohash.org/${i}`,
       });
     }
+  }
+
+  onSelectUser(user: User) {
+    this.otherUser = user;
   }
 }

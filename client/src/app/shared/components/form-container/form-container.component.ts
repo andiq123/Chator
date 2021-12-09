@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+
 import { InputField } from '../../models/input-field.interface';
 
 @Component({
@@ -10,6 +11,9 @@ import { InputField } from '../../models/input-field.interface';
 export class FormContainerComponent implements OnInit {
   @Input() fields: InputField[] = [];
   @Input() title?: string;
+  @Input() settings: { registerForm: boolean } = { registerForm: true };
+  @Input() resetOnSubmit: boolean = false;
+  @Output() onSubmit: EventEmitter<object> = new EventEmitter<object>();
   formGroup!: FormGroup;
   constructor(private fb: FormBuilder) {}
 
@@ -27,5 +31,12 @@ export class FormContainerComponent implements OnInit {
       );
       this.formGroup = group;
     });
+  }
+
+  submit() {
+    if (this.formGroup.invalid) return;
+    this.onSubmit.emit(this.formGroup.value);
+    if (!this.resetOnSubmit) return;
+    this.formGroup.reset();
   }
 }

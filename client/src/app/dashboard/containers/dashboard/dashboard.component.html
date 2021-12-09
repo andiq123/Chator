@@ -1,1 +1,4 @@
-<app-users [users]="users"></app-users>
+<div class="dashboard">
+    <app-users [users]="users" (onSelectUser)="onSelectUser($event)"></app-users>
+    <app-talk-section *ngIf="user && otherUser" [user]="user" [otherUser]="otherUser"></app-talk-section>
+</div>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { InputField } from '../../models/input-field.interface';
+import { InputField } from '../../../shared/models/input-field.interface';
 
 @Component({
   selector: 'app-register',

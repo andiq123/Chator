@@ -1,0 +1,15 @@
+<div>
+    <mat-card class="msg" [ngStyle]="{'flex-direction':isSender?'row':'row-reverse'}">
+        <div class="message-container">
+            {{message.message}}
+        </div>
+        <div class="right-section">
+            <div class="name-container">
+                {{message.sender.username}}
+            </div>
+            <div class="image-container">
+                <img [src]="message.sender.photoURL" [alt]="message.sender.username">
+            </div>
+        </div>
+    </mat-card>
+</div>
