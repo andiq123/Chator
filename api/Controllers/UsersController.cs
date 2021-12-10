@@ -1,4 +1,3 @@
-
 namespace api.Controllers;
 
 public class UsersController : BaseController
@@ -10,15 +9,45 @@ public class UsersController : BaseController
     }
 
     [HttpGet]
-    public async Task<IReadOnlyList<UserViewModel>> GetUsersAsync()
+    public async Task<ActionResult<IReadOnlyList<UserViewModel>>> GetUsersAsync()
     {
-        return await _usersRepository.GetUsersAsync();
+        try
+        {
+            var users = await _usersRepository.GetUsersAsync();
+            return Ok(users);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpGet("{id}")]
-    public async Task<UserViewModel> GetUserAsync(string id)
+    public async Task<ActionResult<UserViewModel>> GetUserAsync(string id)
     {
-        return await _usersRepository.GetUserAsync(id);
+        try
+        {
+            var user = await _usersRepository.GetUserAsync(id);
+            return user;
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
+    [HttpGet("loggedUser")]
+    public async Task<ActionResult<UserViewModel>> GetUserByEmailAsync()
+    {
+        try
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Ok(await _usersRepository.GetUserAsync(userId));
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }
 

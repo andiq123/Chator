@@ -1,5 +1,3 @@
-
-
 namespace api.Services;
 
 public class TokenService

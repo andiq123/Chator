@@ -1,0 +1,3 @@
+<div class="register" *ngIf="fields">
+    <app-form-container [fields]="fields" [title]="'Register'" (onSubmit)="submit($event)"></app-form-container>
+</div>

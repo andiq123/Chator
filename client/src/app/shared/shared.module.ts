@@ -9,6 +9,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { FormContainerComponent } from './components/form-container/form-container.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 const MaterialsModules = [
   MatButtonModule,
@@ -22,7 +23,17 @@ const MaterialsModules = [
 
 @NgModule({
   declarations: [FormContainerComponent],
-  imports: [CommonModule, MaterialsModules, ReactiveFormsModule],
-  exports: [MaterialsModules, FormContainerComponent, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    MaterialsModules,
+    ReactiveFormsModule,
+    HttpClientModule,
+  ],
+  exports: [
+    MaterialsModules,
+    FormContainerComponent,
+    ReactiveFormsModule,
+    HttpClientModule,
+  ],
 })
 export class SharedModule {}

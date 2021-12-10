@@ -1,0 +1,20 @@
+<mat-card class="talk-container">
+    <mat-card-title class="header">
+        <h3>{{ otherUser.userName }}</h3>
+    </mat-card-title>
+    <mat-card-content class="body">
+        <div class="messages-shower">
+            <app-message *ngFor="let message of messages" [message]="message"
+                [isSender]="message.sender.id === user.id">
+            </app-message>
+        </div>
+
+        <div class="messages-sender">
+            <app-form-container [fields]="fields" [settings]="{registerForm:false}" (onSubmit)="onSubmitForm($event)"
+                [resetOnSubmit]="true">
+            </app-form-container>
+        </div>
+
+    </mat-card-content>
+
+</mat-card>

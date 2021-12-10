@@ -1,5 +1,3 @@
-
-
 namespace api.Dtos;
 
 public class UserToCreateDto : UserToLoginDto

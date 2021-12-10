@@ -1,0 +1,14 @@
+mat-toolbar {
+  mat-toolbar-row {
+    max-width: 90%;
+    margin: 0 auto;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    .nav-buttons {
+      button {
+        margin: 0 10px;
+      }
+    }
+  }
+}

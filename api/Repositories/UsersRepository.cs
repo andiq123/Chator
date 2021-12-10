@@ -1,5 +1,3 @@
-
-
 namespace api.Repositories;
 
 public class UsersRepository : IUsersRepository
@@ -17,6 +15,13 @@ public class UsersRepository : IUsersRepository
         var user = await _userManager.FindByIdAsync(id);
         if (user == null) throw new Exception("No user found");
         return _mapper.Map<User, UserViewModel>(user);
+    }
+
+    public async Task<User> GetUserRawAsync(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null) throw new Exception("No user found");
+        return user;
     }
 
     public async Task<IReadOnlyList<UserViewModel>> GetUsersAsync()
