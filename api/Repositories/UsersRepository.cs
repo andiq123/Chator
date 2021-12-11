@@ -24,9 +24,9 @@ public class UsersRepository : IUsersRepository
         return user;
     }
 
-    public async Task<IReadOnlyList<UserViewModel>> GetUsersAsync()
+    public async Task<IReadOnlyList<UserViewModel>> GetUsersAsync(string loggedUserId)
     {
-        var users = await _userManager.Users.ToListAsync();
+        var users = await _userManager.Users.Where(x => x.Id != loggedUserId).ToListAsync();
         if (users == null) throw new Exception("No users in Database");
         return users.Select(x => _mapper.Map<User, UserViewModel>(x)).ToList();
     }

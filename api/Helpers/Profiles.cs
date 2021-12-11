@@ -5,5 +5,6 @@ public class Profiles : Profile
     public Profiles()
     {
         CreateMap<User, UserViewModel>();
+        CreateMap<Message, MessageViewModel>();
     }
 }

@@ -3,8 +3,10 @@ namespace api.Repositories;
 public class MessagesRepository : IMessagesRepository
 {
     private readonly DataContext _context;
-    public MessagesRepository(DataContext context)
+    private readonly IMapper _mapper;
+    public MessagesRepository(DataContext context, IMapper mapper)
     {
+        _mapper = mapper;
         _context = context;
     }
 
@@ -34,11 +36,13 @@ public class MessagesRepository : IMessagesRepository
         return msg;
     }
 
-    public async Task<IReadOnlyList<Message>> GetMessages()
+    public async Task<IReadOnlyList<MessageViewModel>> GetMessages(string loggedUserId, string otherUserId)
     {
-        var messages = await _context.Messages.ToListAsync();
-        return messages;
+        var messages = await _context.Messages.Where(m => (m.RecieverId == loggedUserId && m.SenderId == otherUserId) || (m.RecieverId == otherUserId && m.SenderId == loggedUserId)).ToListAsync();
+        if (messages == null) throw new Exception("Messages not found");
+        return _mapper.Map<List<Message>, IReadOnlyList<MessageViewModel>>(messages);
     }
+
 
     public Task<Message> UpdateMessage(string message)
     {

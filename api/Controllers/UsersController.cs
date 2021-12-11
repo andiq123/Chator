@@ -1,5 +1,6 @@
 namespace api.Controllers;
 
+[Authorize]
 public class UsersController : BaseController
 {
     private readonly IUsersRepository _usersRepository;
@@ -13,7 +14,8 @@ public class UsersController : BaseController
     {
         try
         {
-            var users = await _usersRepository.GetUsersAsync();
+            var loggedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var users = await _usersRepository.GetUsersAsync(loggedUserId);
             return Ok(users);
         }
         catch (Exception ex)

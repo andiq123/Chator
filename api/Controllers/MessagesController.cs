@@ -12,12 +12,13 @@ public class MessagesController : BaseController
     }
 
 
-    [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<Message>>> GetMessages()
+    [HttpGet("{otherUserId}")]
+    public async Task<ActionResult<IReadOnlyList<MessageViewModel>>> GetMessages(string otherUserId)
     {
         try
         {
-            return Ok(await _messagesRepository.GetMessages());
+            var loggedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Ok(await _messagesRepository.GetMessages(loggedUserId, otherUserId));
         }
         catch (Exception ex)
         {
@@ -25,20 +26,6 @@ public class MessagesController : BaseController
         }
     }
 
-
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Message>> GetMessage(Guid id)
-    {
-        try
-        {
-            var message = await _messagesRepository.GetMessage(id);
-            return Ok(message);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
-    }
 
     [HttpPost]
     public async Task<ActionResult<Message>> CreateMessage(MessageToAddDto message)

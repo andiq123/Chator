@@ -11,8 +11,8 @@ using api.Data;
 namespace api.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211210102339_changedUsers")]
-    partial class changedUsers
+    [Migration("20211211114513_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -4,8 +4,7 @@
     </mat-card-title>
     <mat-card-content class="body">
         <div class="messages-shower">
-            <app-message *ngFor="let message of messages" [message]="message"
-                [isSender]="message.sender.id === user.id">
+            <app-message *ngFor="let message of messages" [message]="message" [isSender]="message.senderId === user.id">
             </app-message>
         </div>
 
@@ -14,7 +13,5 @@
                 [resetOnSubmit]="true">
             </app-form-container>
         </div>
-
     </mat-card-content>
-
 </mat-card>

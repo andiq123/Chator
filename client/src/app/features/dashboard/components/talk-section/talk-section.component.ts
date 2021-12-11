@@ -2,7 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { InputField } from 'src/app/shared/models/input-field.interface';
 import { User } from 'src/app/shared/models/user.interface';
+import { messageToAddDto } from '../../Dtos/messageToAdd.interface';
 import { Message } from '../../models/message.interface';
+import { MessagesService } from '../../services/messages.service';
 
 @Component({
   selector: 'app-talk-section',
@@ -14,30 +16,20 @@ export class TalkSectionComponent implements OnInit {
   @Input() user!: User;
   fields!: InputField[];
   messages: Message[] = [];
-  constructor() {}
+  constructor(private messageService: MessagesService) {}
 
   ngOnInit(): void {
     this.generateFields();
-    this.generateMessages();
+    this.loadMessages();
   }
 
-  generateMessages() {
-    this.messages = [
-      {
-        sender: this.user,
-        reciever: this.otherUser,
-        sent: new Date().toString(),
-        message: 'salut frate',
-      },
-      {
-        sender: this.otherUser,
-        reciever: this.user,
-        sent: new Date().toString(),
-        message: 'salut salut!',
-      },
-    ];
+  loadMessages() {
+    this.messageService
+      .getMessages(this.otherUser.id)
+      .subscribe((messages: Message[]) => {
+        this.messages = messages;
+      });
   }
-
   generateFields() {
     this.fields = [
       {
@@ -53,6 +45,16 @@ export class TalkSectionComponent implements OnInit {
 
   onSubmitForm(values: any) {
     const { message } = values;
-    console.log(message);
+    const messageToAddDto: messageToAddDto = {
+      text: message,
+      recieverId: this.otherUser.id,
+    };
+    console.log(messageToAddDto);
+
+    this.messageService
+      .createMessage(messageToAddDto)
+      .subscribe((message: Message) => {
+        console.log(message);
+      });
   }
 }
