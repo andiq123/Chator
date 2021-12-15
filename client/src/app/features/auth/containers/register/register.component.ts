@@ -38,6 +38,20 @@ export class RegisterComponent implements OnInit {
       ],
     });
     this.fields.push({
+      type: 'text',
+      label: 'Description',
+      name: 'description',
+      value: '',
+      placeholder: 'Enter your description',
+      minLength: 3,
+      maxLength: 100,
+      validators: [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(100),
+      ],
+    });
+    this.fields.push({
       type: 'password',
       label: 'Password',
       name: 'password',

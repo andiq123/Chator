@@ -4,7 +4,7 @@
     <form [formGroup]="formGroup" (ngSubmit)="submit()">
         <mat-form-field appearance="fill" *ngFor="let field of fields">
             <mat-label>{{field.label}}</mat-label>
-            <input matInput [formControlName]="field.name" [placeholder]="field.placeholder">
+            <input matInput [formControlName]="field.name" [placeholder]="field.placeholder" [type]="field.type">
             <mat-error *ngIf="formGroup.get(field.name)?.invalid && formGroup.dirty">
                 <mat-error *ngIf="formGroup.get(field.name)?.hasError('required')">
                     {{field.label}} is required

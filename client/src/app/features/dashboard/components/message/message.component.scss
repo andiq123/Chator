@@ -3,18 +3,20 @@
   justify-content: flex-end;
   align-items: center;
   margin-top: 5px;
+  box-shadow: none;
+  overflow-y: auto;
+  gap: 10px;
   .message-container {
     margin-right: 2vw;
   }
-  .right-section {
-    padding: 0 15px;
-    display: flex;
-    flex-flow: column;
-    .image-container {
-      width: 50px;
-      img {
-        width: 100%;
-      }
+
+  .image-container {
+    width: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    img {
+      width: 100%;
+      object-fit: cover;
     }
   }
 }

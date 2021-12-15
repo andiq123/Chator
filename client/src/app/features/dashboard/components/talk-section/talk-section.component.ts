@@ -1,35 +1,56 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { Validators } from '@angular/forms';
 import { InputField } from 'src/app/shared/models/input-field.interface';
 import { User } from 'src/app/shared/models/user.interface';
-import { messageToAddDto } from '../../Dtos/messageToAdd.interface';
+import { MessageToAddDto } from '../../Dtos/messageToAdd.interface';
 import { Message } from '../../models/message.interface';
-import { MessagesService } from '../../services/messages.service';
 
 @Component({
   selector: 'app-talk-section',
   templateUrl: './talk-section.component.html',
   styleUrls: ['./talk-section.component.scss'],
 })
-export class TalkSectionComponent implements OnInit {
+export class TalkSectionComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() otherUser!: User;
   @Input() user!: User;
+  @Input() messages: Message[] = [];
+  @Output() onMessageSent = new EventEmitter<MessageToAddDto>();
+  @ViewChild('messageShower') messageContainer!: ElementRef;
   fields!: InputField[];
-  messages: Message[] = [];
-  constructor(private messageService: MessagesService) {}
+
+  constructor() {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!this.messageContainer) return;
+    this.scrollToBottom();
+  }
 
   ngOnInit(): void {
     this.generateFields();
-    this.loadMessages();
   }
 
-  loadMessages() {
-    this.messageService
-      .getMessages(this.otherUser.id)
-      .subscribe((messages: Message[]) => {
-        this.messages = messages;
-      });
+  ngAfterViewInit(): void {
+    this.scrollToBottom();
   }
+
+  scrollToBottom() {
+    setTimeout((): void => {
+      this.messageContainer.nativeElement.scrollTop =
+        this.messageContainer.nativeElement.scrollHeight;
+    }, 10);
+  }
+
   generateFields() {
     this.fields = [
       {
@@ -45,16 +66,10 @@ export class TalkSectionComponent implements OnInit {
 
   onSubmitForm(values: any) {
     const { message } = values;
-    const messageToAddDto: messageToAddDto = {
+    const messageToAddDto: MessageToAddDto = {
       text: message,
       recieverId: this.otherUser.id,
     };
-    console.log(messageToAddDto);
-
-    this.messageService
-      .createMessage(messageToAddDto)
-      .subscribe((message: Message) => {
-        console.log(message);
-      });
+    this.onMessageSent.emit(messageToAddDto);
   }
 }

@@ -1,0 +1,3 @@
+<div *ngIf="LoggedUser as user">
+    <app-form-container [fields]="fields" [title]="'Edit Profile'" (onSubmit)="onSubmit($event)"></app-form-container>
+</div>

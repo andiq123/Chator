@@ -10,6 +10,7 @@ const routes: Routes = [
     path: 'auth',
     loadChildren: () =>
       import('./features/auth/auth.module').then((m) => m.AuthModule),
+    canActivate: [AuthGuard],
   },
   {
     path: 'dashboard',
@@ -17,6 +18,12 @@ const routes: Routes = [
       import('./features/dashboard/dashboard.module').then(
         (m) => m.DashboardModule
       ),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'edit',
+    loadChildren: () =>
+      import('./features/edit/edit.module').then((m) => m.EditModule),
     canActivate: [AuthGuard],
   },
   { path: '**', component: NotFoundComponent },

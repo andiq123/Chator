@@ -5,4 +5,5 @@ public interface IUsersRepository
     Task<IReadOnlyList<UserViewModel>> GetUsersAsync(string loggedUserId);
     Task<UserViewModel> GetUserAsync(string id);
     Task<User> GetUserRawAsync(string id);
+    Task<UserViewModel> UpdateUserAsync(string userId, UserToUpdateDto userToUpdateDto);
 }

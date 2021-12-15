@@ -38,6 +38,25 @@ public class UsersController : BaseController
         }
     }
 
+    [HttpPut("{id}")]
+    public async Task<ActionResult<UserViewModel>> UpdateUser(string id, [FromBody] UserToUpdateDto userToUpdateDto)
+    {
+        var loggedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (loggedUserId != id)
+        {
+            return Unauthorized();
+        }
+        try
+        {
+            var user = await _usersRepository.UpdateUserAsync(id, userToUpdateDto);
+            return Ok(user);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
     [HttpGet("loggedUser")]
     public async Task<ActionResult<UserViewModel>> GetUserByEmailAsync()
     {

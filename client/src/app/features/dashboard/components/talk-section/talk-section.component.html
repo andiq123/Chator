@@ -1,10 +1,11 @@
 <mat-card class="talk-container">
     <mat-card-title class="header">
-        <h3>{{ otherUser.userName }}</h3>
+        <h3>{{ otherUser.userName | titlecase}} | {{otherUser.description }} </h3>
     </mat-card-title>
     <mat-card-content class="body">
-        <div class="messages-shower">
-            <app-message *ngFor="let message of messages" [message]="message" [isSender]="message.senderId === user.id">
+        <div class="messages-shower" #messageShower>
+            <app-message *ngFor="let message of messages" [message]="message" [isSender]="message.senderId === user.id"
+                [user]="user" [otherUser]="otherUser">
             </app-message>
         </div>
 

@@ -6,7 +6,7 @@ import {
   RouterStateSnapshot,
   UrlTree,
 } from '@angular/router';
-import { map, Observable, switchMap } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { LogginPersisterService } from '../services/loggin-persister.service';
 
 @Injectable({
@@ -25,14 +25,21 @@ export class AuthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
+    if (route?.routeConfig?.path == 'auth' && !localStorage.getItem('token')) {
+      return true;
+    } else if (
+      route?.routeConfig?.path == 'auth' &&
+      localStorage.getItem('token')
+    ) {
+      this.router.navigate(['/dashboard']);
+      return false;
+    } else if (!localStorage.getItem('token')) {
+      this.router.navigate(['/auth/login']);
+      return false;
+    }
     return this.logginPersister.LoggedUser.pipe(
       map((user) => {
-        if (!user) {
-          // this.router.navigateByUrl('/auth/login');
-          return false;
-        }
-
-        return true;
+        return !!user;
       })
     );
   }

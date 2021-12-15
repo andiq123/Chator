@@ -30,4 +30,14 @@ public class UsersRepository : IUsersRepository
         if (users == null) throw new Exception("No users in Database");
         return users.Select(x => _mapper.Map<User, UserViewModel>(x)).ToList();
     }
+
+    public async Task<UserViewModel> UpdateUserAsync(string userId, UserToUpdateDto userToUpdateDto)
+    {
+        var user = await GetUserRawAsync(userId);
+        user.UserName = userToUpdateDto.Username ?? user.UserName;
+        user.Description = userToUpdateDto.Description ?? user.Description;
+        user.PhotoUrl = userToUpdateDto.PhotoUrl ?? user.PhotoUrl;
+        await _userManager.UpdateAsync(user);
+        return _mapper.Map<User, UserViewModel>(user);
+    }
 }

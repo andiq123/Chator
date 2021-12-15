@@ -2,6 +2,7 @@
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
+  gap: 5px;
   app-users {
     flex: 0.2;
     margin: 0;

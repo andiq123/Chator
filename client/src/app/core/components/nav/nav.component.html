@@ -4,6 +4,7 @@
         <div class="right-section">
             <div *ngIf="LoggedUser | async; else notLogged" class="nav-buttons">
                 <button mat-flat-button routerLink="/dashboard">Dashboard</button>
+                <button mat-flat-button routerLink="/edit">Edit Profile</button>
                 <button mat-flat-button (click)="signOut()">Sign Out</button>
             </div>
             <ng-template #notLogged>

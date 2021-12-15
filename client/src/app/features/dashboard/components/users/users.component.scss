@@ -9,23 +9,24 @@
 
     .user {
       display: flex;
-      flex-flow: row;
-      align-items: flex-start;
       margin-top: 1vh;
+      gap: 10px;
       cursor: pointer;
       transition: background-color 100ms ease-in-out;
       &:hover {
         background-color: lighten($color: #424242, $amount: 2);
       }
       .image-container {
-        width: 100px;
+        width: 70px;
+        border-radius: 50%;
+        overflow: hidden;
         img {
           width: 100%;
+          object-fit: cover;
         }
       }
 
       .name-container {
-        margin-top: 5vh;
         font-weight: bold;
         font-size: 1.2rem;
       }

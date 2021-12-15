@@ -5,7 +5,7 @@ export interface InputField {
   type: string;
   label: string;
   placeholder: string;
-  value: string;
+  value?: string;
   validators?: ValidatorFn[];
   minLength?: number;
   maxLength?: number;
