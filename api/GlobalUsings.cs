@@ -17,3 +17,4 @@ global using api.Repositories;
 global using api.Models;
 global using AutoMapper;
 global using Microsoft.AspNetCore.Authorization;
+global using api.Helpers;

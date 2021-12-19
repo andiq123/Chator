@@ -2,7 +2,7 @@
     <mat-card class="user-list">
         <mat-card *ngFor="let user of users" class="user" (click)="selectUser(user)">
             <div class="image-container">
-                <img [src]="user.photoUrl ?? 'assets/defaultProfile.png'" [alt]="user.userName">
+                <img [src]="user.getPhotoUrl()" [alt]="user.userName">
             </div>
             <div class="name-container">
                 {{user.userName | titlecase}}

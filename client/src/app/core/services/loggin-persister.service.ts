@@ -16,7 +16,9 @@ export class LogginPersisterService {
   constructor(private http: HttpClient, private router: Router) {}
 
   setLoggedUser(userParam: User | null = null) {
-    if (userParam) return this.loggedUserSource.next(userParam);
+    if (userParam) {
+      return this.loggedUserSource.next(Object.assign(new User(), userParam));
+    }
     return this.http
       .get<User>(`${this.baseUrl}/users/loggedUser`)
       .pipe(
@@ -27,7 +29,9 @@ export class LogginPersisterService {
         })
       )
       .subscribe((user) => {
-        if (user) this.loggedUserSource.next(user);
+        if (user) {
+          this.loggedUserSource.next(Object.assign(new User(), user));
+        }
       });
   }
 

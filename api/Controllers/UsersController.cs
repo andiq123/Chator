@@ -1,3 +1,5 @@
+
+
 namespace api.Controllers;
 
 [Authorize]
@@ -38,10 +40,32 @@ public class UsersController : BaseController
         }
     }
 
+    [HttpPost("photo")]
+    public async Task<IActionResult> photoTest()
+    {
+        var file = Request.Form.Files[0];
+        if (file == null) return BadRequest("No Image was provided");
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _usersRepository.GetUserAsync(userId);
+        if (user == null) return NotFound("User not found");
+
+        if (!string.IsNullOrEmpty(user.PhotoUrl))
+            ImageHelper.RemoveImage(user.PhotoUrl);
+
+        var userToUpdate = new UserToUpdateDto()
+        {
+            Photo = ImageHelper.CreateImage(file)
+        };
+
+        var userUpdated = await _usersRepository.UpdateUserAsync(userId, userToUpdate);
+        return Ok(userUpdated);
+    }
+
     [HttpPut("{id}")]
     public async Task<ActionResult<UserViewModel>> UpdateUser(string id, [FromBody] UserToUpdateDto userToUpdateDto)
     {
         var loggedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
         if (loggedUserId != id)
         {
             return Unauthorized();

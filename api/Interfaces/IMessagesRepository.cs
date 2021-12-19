@@ -6,5 +6,5 @@ public interface IMessagesRepository
     Task<IReadOnlyList<MessageViewModel>> GetMessages(string loggedUserId, string otherUserId);
     Task<Message> GetMessage(Guid id);
     Task<Message> UpdateMessage(string message);
-    Task DeleteMessage(Guid id);
+    Task DeleteMessage(Guid id, string loggedUserId);
 }

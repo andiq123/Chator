@@ -24,9 +24,12 @@ public class MessagesRepository : IMessagesRepository
         return msg;
     }
 
-    public Task DeleteMessage(Guid id)
+    public async Task DeleteMessage(Guid id, string loggedUserId)
     {
-        throw new NotImplementedException();
+        var msg = await GetMessage(id);
+        if (msg.SenderId != loggedUserId) throw new Exception("You are not allowed to delete this message");
+        _context.Messages.Remove(msg);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<Message> GetMessage(Guid id)
@@ -38,7 +41,7 @@ public class MessagesRepository : IMessagesRepository
 
     public async Task<IReadOnlyList<MessageViewModel>> GetMessages(string loggedUserId, string otherUserId)
     {
-        var messages = await _context.Messages.Where(m => (m.RecieverId == loggedUserId && m.SenderId == otherUserId) || (m.RecieverId == otherUserId && m.SenderId == loggedUserId)).ToListAsync();
+        var messages = await _context.Messages.Where(m => (m.RecieverId == loggedUserId && m.SenderId == otherUserId) || (m.RecieverId == otherUserId && m.SenderId == loggedUserId)).OrderBy(x => x.Created).ToListAsync();
         if (messages == null) throw new Exception("Messages not found");
         return _mapper.Map<List<Message>, IReadOnlyList<MessageViewModel>>(messages);
     }

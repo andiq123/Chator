@@ -34,6 +34,7 @@ export class EditProfileComponent implements OnInit {
 
   generateFields() {
     if (!this.LoggedUser) return;
+    this.fields = [];
     this.fields.push({
       type: 'text',
       label: 'Username',
@@ -61,6 +62,21 @@ export class EditProfileComponent implements OnInit {
         Validators.minLength(3),
         Validators.maxLength(100),
       ],
+    });
+    this.fields.push({
+      type: 'file',
+      label: 'Profile picture',
+      name: 'profilePicture',
+      value: this.LoggedUser.getPhotoUrl(),
+      placeholder: 'Change your profile picture',
+    });
+  }
+
+  photoFile?: object;
+  async onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    return this.usersService.photoTest(file).subscribe((user: User) => {
+      this.logginPersiter.setLoggedUser(user);
     });
   }
 

@@ -14,6 +14,7 @@ export class FormContainerComponent implements OnInit {
   @Input() settings: { registerForm: boolean } = { registerForm: true };
   @Input() resetOnSubmit: boolean = false;
   @Output() onSubmit: EventEmitter<object> = new EventEmitter<object>();
+  @Output() onFileSelected: EventEmitter<File> = new EventEmitter<File>();
   formGroup!: FormGroup;
   constructor(private fb: FormBuilder) {}
 
@@ -38,5 +39,9 @@ export class FormContainerComponent implements OnInit {
     this.onSubmit.emit(this.formGroup.value);
     if (!this.resetOnSubmit) return;
     this.formGroup.reset();
+  }
+
+  onFileChanged(event: any) {
+    this.onFileSelected.emit(event);
   }
 }

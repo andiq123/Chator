@@ -44,6 +44,21 @@ public class MessagesController : BaseController
             return NotFound(ex.Message);
         }
     }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteMessage(Guid id)
+    {
+        try
+        {
+            var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            await _messagesRepository.DeleteMessage(id, userId);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
 }
 
 

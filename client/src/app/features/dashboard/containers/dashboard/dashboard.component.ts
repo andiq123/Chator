@@ -50,7 +50,7 @@ export class DashboardComponent implements OnInit {
 
   populateUsers() {
     this.userService.getUsers().subscribe((users) => {
-      this.users = users;
+      this.users = users.map((x) => Object.assign(new User(), x));
       this.otherUser = this.users[0];
       this.loadMessages();
     });
@@ -59,5 +59,11 @@ export class DashboardComponent implements OnInit {
   onSelectUser(user: User) {
     this.otherUser = user;
     this.loadMessages();
+  }
+
+  deleteMessage(messageId: string) {
+    this.messageService.deleteMessage(messageId).subscribe(() => {
+      this.messages = this.messages.filter((x) => x.id !== messageId);
+    });
   }
 }

@@ -9,6 +9,7 @@ import { User } from 'src/app/shared/models/user.interface';
 export class UsersComponent implements OnInit {
   @Input() users: User[] = [];
   @Output() onSelectUser: EventEmitter<User> = new EventEmitter<User>();
+
   constructor() {}
 
   ngOnInit(): void {}

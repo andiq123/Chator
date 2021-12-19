@@ -2,22 +2,39 @@
     [ngClass]="{'registerForm':settings.registerForm, 'nonRegisterForm':!settings.registerForm}">
     <mat-card-title *ngIf="title">{{title}}</mat-card-title>
     <form [formGroup]="formGroup" (ngSubmit)="submit()">
-        <mat-form-field appearance="fill" *ngFor="let field of fields">
-            <mat-label>{{field.label}}</mat-label>
-            <input matInput [formControlName]="field.name" [placeholder]="field.placeholder" [type]="field.type">
-            <mat-error *ngIf="formGroup.get(field.name)?.invalid && formGroup.dirty">
-                <mat-error *ngIf="formGroup.get(field.name)?.hasError('required')">
-                    {{field.label}} is required
+        <div *ngFor="let field of fields" class="mat-form-field">
+            <mat-form-field appearance="fill" *ngIf="field.type !== 'file'">
+                <mat-label>{{field.label}}</mat-label>
+                <input matInput [formControlName]="field.name" [placeholder]="field.placeholder" [type]="field.type">
+                <mat-error *ngIf="formGroup.get(field.name)?.invalid && formGroup.dirty">
+                    <mat-error *ngIf="formGroup.get(field.name)?.hasError('required')">
+                        {{field.label}} is required
+                    </mat-error>
+                    <mat-error *ngIf="formGroup.get(field.name)?.hasError('minlength')">
+                        {{field.label}} must be at least {{field.minLength}} characters.
+                        {{field.minLength ? field.minLength - formGroup.get(field.name)?.value.length : null}} Remaining
+                    </mat-error>
+                    <mat-error *ngIf="formGroup.get(field.name)?.hasError('maxlength')">
+                        {{field.label}} must be at most {{field.maxLength}} characters
+                    </mat-error>
                 </mat-error>
-                <mat-error *ngIf="formGroup.get(field.name)?.hasError('minlength')">
-                    {{field.label}} must be at least {{field.minLength}} characters.
-                    {{field.minLength ? field.minLength - formGroup.get(field.name)?.value.length : null}} Remaining
-                </mat-error>
-                <mat-error *ngIf="formGroup.get(field.name)?.hasError('maxlength')">
-                    {{field.label}} must be at most {{field.maxLength}} characters
-                </mat-error>
-            </mat-error>
-        </mat-form-field>
+            </mat-form-field>
+            <div *ngIf="field.type === 'file'" class="fileInput">
+                <div class="left-section">
+
+                    <div class="image-container">
+                        <img [src]="field.value" alt="field.value">
+                    </div>
+                </div>
+                <div class="right-section">
+
+                    <mat-label>{{field.label}}</mat-label>
+                    <button type="button" mat-raised-button (click)="fileInput.click()">Choose File</button>
+                    <input hidden #fileInput type="file" id="file" (change)="onFileChanged($event)"
+                        value="'<mat-icon>cloud_upload</mat-icon>'">
+                </div>
+            </div>
+        </div>
         <button mat-flat-button color="primary" [disabled]="formGroup.invalid">Submit</button>
     </form>
 </mat-card>

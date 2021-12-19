@@ -36,7 +36,7 @@ public class UsersRepository : IUsersRepository
         var user = await GetUserRawAsync(userId);
         user.UserName = userToUpdateDto.Username ?? user.UserName;
         user.Description = userToUpdateDto.Description ?? user.Description;
-        user.PhotoUrl = userToUpdateDto.PhotoUrl ?? user.PhotoUrl;
+        user.PhotoUrl = userToUpdateDto.Photo ?? user.PhotoUrl;
         await _userManager.UpdateAsync(user);
         return _mapper.Map<User, UserViewModel>(user);
     }

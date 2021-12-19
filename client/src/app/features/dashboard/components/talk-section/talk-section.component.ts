@@ -27,6 +27,7 @@ export class TalkSectionComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() messages: Message[] = [];
   @Output() onMessageSent = new EventEmitter<MessageToAddDto>();
   @ViewChild('messageShower') messageContainer!: ElementRef;
+  @Output() onDeleteMessage: EventEmitter<string> = new EventEmitter<string>();
   fields!: InputField[];
 
   constructor() {}
@@ -71,5 +72,9 @@ export class TalkSectionComponent implements OnInit, AfterViewInit, OnChanges {
       recieverId: this.otherUser.id,
     };
     this.onMessageSent.emit(messageToAddDto);
+  }
+
+  deleteMessage(id: string) {
+    this.onDeleteMessage.emit(id);
   }
 }

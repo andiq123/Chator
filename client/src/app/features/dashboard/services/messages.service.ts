@@ -13,7 +13,7 @@ export class MessagesService {
   baseUrl = environment.baseUrl;
   constructor(private http: HttpClient) {}
 
-  getMessages(otherUserId: string): Observable<Message[]> {
+  getMessages(otherUserId: string | undefined): Observable<Message[]> {
     return this.http.get<Message[]>(this.baseUrl + '/messages/' + otherUserId);
   }
 
@@ -22,6 +22,10 @@ export class MessagesService {
   }
 
   createMessage(message: MessageToAddDto): Observable<Message> {
-    return this.http.post<Message>(this.baseUrl + '/messages', message);
+    return this.http.post<Message>(this.baseUrl + '/messages/', message);
+  }
+
+  deleteMessage(id: string): Observable<void> {
+    return this.http.delete<void>(this.baseUrl + '/messages/' + id);
   }
 }

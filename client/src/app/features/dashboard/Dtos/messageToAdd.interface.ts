@@ -1,4 +1,4 @@
 export interface MessageToAddDto {
   text: string;
-  recieverId: string;
+  recieverId?: string;
 }
