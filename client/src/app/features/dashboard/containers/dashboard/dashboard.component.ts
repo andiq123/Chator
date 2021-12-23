@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LogginPersisterService } from 'src/app/core/services/loggin-persister.service';
+import { SignalrService } from 'src/app/core/services/signalr.service';
 import { User } from 'src/app/shared/models/user.interface';
 import { MessageToAddDto } from '../../Dtos/messageToAdd.interface';
 import { Message } from '../../models/message.interface';
@@ -22,12 +23,15 @@ export class DashboardComponent implements OnInit {
   constructor(
     private userService: UsersService,
     private loginPersister: LogginPersisterService,
-    private messageService: MessagesService
+    private messageService: MessagesService,
+    private signalrService: SignalrService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.User$ = this.loginPersister.LoggedUser;
     this.populateUsers();
+    await this.signalrService.startConnection();
+    this.signalrService.setConnectionId();
   }
 
   loadMessages() {

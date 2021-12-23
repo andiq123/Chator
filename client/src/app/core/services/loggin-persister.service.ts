@@ -35,6 +35,16 @@ export class LogginPersisterService {
       });
   }
 
+  addSignalrConnectionId(connectionId: string) {
+    this.LoggedUser.subscribe((user) => {
+      if (user) {
+        user.signalrConnectionId = connectionId;
+        this.loggedUserSource.next(user);
+        console.log(user);
+      }
+    });
+  }
+
   signOut() {
     localStorage.removeItem('token');
     this.loggedUserSource.next(null);
