@@ -26,7 +26,7 @@ app.UseCors();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-
+app.MapHub<ChatHub>("/chat");
 app.MapControllers();
 
 app.Run();
