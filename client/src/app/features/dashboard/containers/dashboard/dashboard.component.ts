@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LogginPersisterService } from 'src/app/core/services/loggin-persister.service';
 import { SignalrService } from 'src/app/core/services/signalr.service';
@@ -13,7 +13,7 @@ import { UsersService } from '../../services/users.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   public User$!: Observable<User | null>;
   users: User[] = [];
 
@@ -27,11 +27,43 @@ export class DashboardComponent implements OnInit {
     private signalrService: SignalrService
   ) {}
 
+  ngOnDestroy(): void {
+    this.signalrService.disconnect();
+  }
+
   async ngOnInit() {
     this.User$ = this.loginPersister.LoggedUser;
     this.populateUsers();
     await this.signalrService.startConnection();
-    this.signalrService.setConnectionId();
+
+    this.ListenForConnections();
+  }
+
+  ListenForConnections() {
+    this.signalrService.UserDisconnected$.subscribe((user) => {
+      this.users = this.users.map((x) => {
+        if (x.signalrConnectionId !== user.connectionId) return x;
+        x.signalrConnectionId = undefined;
+        return x;
+      });
+      this.sortUsers();
+    });
+
+    this.signalrService.UserConnected$.subscribe((user) => {
+      const userToAdd = this.users.find((x) => x.id === user.userId);
+      if (!userToAdd) return;
+      userToAdd.signalrConnectionId = user.connectionId;
+      this.users = [...this.users];
+      this.sortUsers();
+    });
+  }
+
+  sortUsers() {
+    this.users = this.users.sort((a, b) => {
+      if (a.signalrConnectionId && !b.signalrConnectionId) return -1;
+      if (!a.signalrConnectionId && b.signalrConnectionId) return 1;
+      return 0;
+    });
   }
 
   loadMessages() {

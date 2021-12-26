@@ -2,13 +2,37 @@ namespace api.Hubs;
 
 public class ChatHub : Hub
 {
-    public async Task GetConnectionId()
+
+    // ovveride on connected
+    public async Task AddMyselfOnline(string userId)
     {
-        await Clients.Caller.SendAsync("ReceiveConnectionId", Context.ConnectionId);
+        var connectionId = Context.ConnectionId;
+        // add user to list
+        Presence.AddUser(userId, connectionId);
+
+        // send to all users
+        await Clients.Others.SendAsync("UserConnected", userId, connectionId);
     }
 
-    public async Task SetOnlineForOthers(string userId, string connectionId)
+
+
+
+    public override async Task OnDisconnectedAsync(Exception? ex)
     {
-        await Clients.Others.SendAsync("SetOnline", userId, connectionId);
+        var connectionId = Context.ConnectionId;
+        // remove user from list
+        Presence.RemoveUser(connectionId);
+
+        // send to all users
+        await Clients.Others.SendAsync("UserDisconnected", connectionId);
     }
+
+
+
+    public async Task GetAllUsersOnline()
+    {
+        var users = Presence.GetConnectedUsers();
+        await Clients.Caller.SendAsync("GetAllUsersOnline", users);
+    }
+
 }

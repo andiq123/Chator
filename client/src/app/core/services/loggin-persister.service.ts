@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, ReplaySubject } from 'rxjs';
+import { catchError, ReplaySubject, take } from 'rxjs';
 import { User } from 'src/app/shared/models/user.interface';
 import { environment } from 'src/environments/environment';
 
@@ -36,11 +36,10 @@ export class LogginPersisterService {
   }
 
   addSignalrConnectionId(connectionId: string) {
-    this.LoggedUser.subscribe((user) => {
+    this.LoggedUser.pipe(take(1)).subscribe((user) => {
       if (user) {
         user.signalrConnectionId = connectionId;
         this.loggedUserSource.next(user);
-        console.log(user);
       }
     });
   }
