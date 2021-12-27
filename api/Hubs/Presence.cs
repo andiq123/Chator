@@ -6,19 +6,19 @@ public static class Presence
 
     public static void AddUser(string userId, string connectionId)
     {
-        if (connectedUsers?.Any(x => x.UserId == userId) == null)
+        if (!connectedUsers.Any(x => x.UserId == userId))
         {
-            connectedUsers?.Add(new ConnectedUser { UserId = userId, ConnectionId = connectionId });
+            connectedUsers.Add(new ConnectedUser { UserId = userId, ConnectionId = connectionId });
         }
     }
 
-    public static void RemoveUser(string connectionId)
+    public static string RemoveUser(string connectionId)
     {
-        var user = connectedUsers?.FirstOrDefault(x => x.ConnectionId == connectionId);
-        if (user != null)
-        {
-            connectedUsers?.Remove(user);
-        }
+        var user = connectedUsers.FirstOrDefault(x => x.ConnectionId == connectionId);
+        if (user == null) return null;
+        var userId = user.UserId;
+        connectedUsers.Remove(user);
+        return userId;
     }
 
     public static IList<ConnectedUser> GetConnectedUsers()
@@ -26,9 +26,9 @@ public static class Presence
         return connectedUsers;
     }
 
-    public static ConnectedUser? GetConnectedUser(string userId)
+    public static ConnectedUser GetConnectedUser(string userId)
     {
-        return connectedUsers?.FirstOrDefault(x => x.UserId == userId);
+        return connectedUsers.FirstOrDefault(x => x.UserId == userId);
     }
 
 }

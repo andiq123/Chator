@@ -5,7 +5,7 @@ export class User {
   userName?: string;
   photoUrl?: string;
   description?: string;
-  signalrConnectionId?: string;
+  isOnline?: boolean;
 
   getPhotoUrl(): string {
     if (this.photoUrl) {

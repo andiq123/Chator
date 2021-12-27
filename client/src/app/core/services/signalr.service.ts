@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { BehaviorSubject, Subject, take } from 'rxjs';
+import { ReplaySubject, Subject, take } from 'rxjs';
+import { User } from 'src/app/shared/models/user.interface';
 import { environment } from 'src/environments/environment';
-import { UserConnected } from '../models/userConnected.interface';
 import { LogginPersisterService } from './loggin-persister.service';
 
 @Injectable({
@@ -10,11 +10,14 @@ import { LogginPersisterService } from './loggin-persister.service';
 })
 export class SignalrService {
   private hubConnection?: signalR.HubConnection;
-  private usersConnected: UserConnected[] = [];
-  private userConnectedSource = new Subject<UserConnected>();
+  private usersConnected: string[] = [];
+  private userConnectedSource = new Subject<string>();
   public UserConnected$ = this.userConnectedSource.asObservable();
-  private userDisconnectedSource = new Subject<UserConnected>();
+  private userDisconnectedSource = new Subject<string>();
   public UserDisconnected$ = this.userDisconnectedSource.asObservable();
+
+  private usersConnectedSource = new ReplaySubject<string[]>();
+  public usersConnected$ = this.usersConnectedSource.asObservable();
 
   private baseUrl = environment.baseUrl.split('/api')[0];
   constructor(private logginPersister: LogginPersisterService) {}
@@ -26,12 +29,16 @@ export class SignalrService {
 
     try {
       await this.hubConnection.start();
-      this.setConnectionId();
       this.addMySelfOnline();
+      this.invokeGetAllUsersOnline();
       this.listenToEvents();
     } catch (error) {
       console.log(error);
     }
+  }
+
+  invokeGetAllUsersOnline() {
+    this.hubConnection?.invoke('GetAllUsersOnline');
   }
 
   addMySelfOnline() {
@@ -44,31 +51,32 @@ export class SignalrService {
 
   listenToEvents() {
     // user connected
-    this.hubConnection?.on(
-      'UserConnected',
-      (userId: string, connectionId: string) => {
-        this.usersConnected.push({ userId, connectionId });
-        this.userConnectedSource.next({ userId, connectionId });
-      }
-    );
+    this.hubConnection?.on('UserConnected', (userId: string) => {
+      this.usersConnected.push(userId);
+      this.userConnectedSource.next(userId);
+    });
 
     // user disconnected
-    this.hubConnection?.on('UserDisconnected', (connectionId: string) => {
-      this.usersConnected = this.usersConnected.filter(
-        (x) => x.connectionId !== connectionId
-      );
-      this.userDisconnectedSource.next({ connectionId });
+    this.hubConnection?.on('UserDisconnected', (userId: string) => {
+      console.log(userId);
+      this.usersConnected = this.usersConnected.filter((x) => x !== userId);
+      this.userDisconnectedSource.next(userId);
     });
-  }
 
-  setConnectionId() {
-    if (!this.hubConnection) return;
-    const conId = this.hubConnection.connectionId;
-    if (!conId) return;
-    this.logginPersister.addSignalrConnectionId(conId);
+    this.hubConnection?.on(
+      'GetAllUsersOnline',
+      (users: { userId: string; connectionId: string }[]) => {
+        this.usersConnected = users.map((x) => x.userId);
+        this.usersConnectedSource.next(this.usersConnected);
+      }
+    );
   }
 
   disconnect() {
-    this.hubConnection?.stop();
+    this.logginPersister.LoggedUser.pipe(take(1)).subscribe((user) => {
+      if (!user) return;
+      this.usersConnected = this.usersConnected.filter((x) => x !== user.id);
+      this.hubConnection?.stop();
+    });
   }
 }

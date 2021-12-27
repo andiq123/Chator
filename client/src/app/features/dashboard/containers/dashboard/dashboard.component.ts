@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { LogginPersisterService } from 'src/app/core/services/loggin-persister.service';
 import { SignalrService } from 'src/app/core/services/signalr.service';
 import { User } from 'src/app/shared/models/user.interface';
@@ -35,33 +35,41 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.User$ = this.loginPersister.LoggedUser;
     this.populateUsers();
     await this.signalrService.startConnection();
-
     this.ListenForConnections();
+    this.signalrService.usersConnected$.subscribe((users) => {
+      this.mapConnectedUsers(users);
+    });
+  }
+
+  mapConnectedUsers(usersId: string[]) {
+    this.users = this.users.map((user) => {
+      if (usersId.includes(user.id!)) user.isOnline = true;
+      return user;
+    });
+
+    this.sortUsers();
   }
 
   ListenForConnections() {
-    this.signalrService.UserDisconnected$.subscribe((user) => {
-      this.users = this.users.map((x) => {
-        if (x.signalrConnectionId !== user.connectionId) return x;
-        x.signalrConnectionId = undefined;
-        return x;
-      });
+    this.signalrService.UserDisconnected$.subscribe((userId: string) => {
+      const connectedUser = this.users.find((x) => x.id === userId);
+      if (!connectedUser) return;
+      connectedUser.isOnline = !connectedUser;
       this.sortUsers();
     });
 
-    this.signalrService.UserConnected$.subscribe((user) => {
-      const userToAdd = this.users.find((x) => x.id === user.userId);
-      if (!userToAdd) return;
-      userToAdd.signalrConnectionId = user.connectionId;
-      this.users = [...this.users];
+    this.signalrService.UserConnected$.subscribe((userId: string) => {
+      const connectedUser = this.users.find((x) => x.id === userId);
+      if (!connectedUser) return;
+      connectedUser.isOnline = !!connectedUser;
       this.sortUsers();
     });
   }
 
   sortUsers() {
     this.users = this.users.sort((a, b) => {
-      if (a.signalrConnectionId && !b.signalrConnectionId) return -1;
-      if (!a.signalrConnectionId && b.signalrConnectionId) return 1;
+      if (a.isOnline && !b.isOnline) return -1;
+      if (!a.isOnline && b.isOnline) return 1;
       return 0;
     });
   }

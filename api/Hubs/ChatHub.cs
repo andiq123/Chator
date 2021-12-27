@@ -9,25 +9,20 @@ public class ChatHub : Hub
         var connectionId = Context.ConnectionId;
         // add user to list
         Presence.AddUser(userId, connectionId);
-
-        // send to all users
-        await Clients.Others.SendAsync("UserConnected", userId, connectionId);
+        System.Console.WriteLine("Connected: " + Presence.GetConnectedUsers().Count());
+        // send to other users
+        await Clients.Others.SendAsync("UserConnected", userId);
     }
-
-
-
 
     public override async Task OnDisconnectedAsync(Exception? ex)
     {
         var connectionId = Context.ConnectionId;
         // remove user from list
-        Presence.RemoveUser(connectionId);
-
-        // send to all users
-        await Clients.Others.SendAsync("UserDisconnected", connectionId);
+        var userId = Presence.RemoveUser(connectionId);
+        System.Console.WriteLine("Disconected: " + Presence.GetConnectedUsers().Count());
+        // send to other users
+        await Clients.Others.SendAsync("UserDisconnected", userId);
     }
-
-
 
     public async Task GetAllUsersOnline()
     {

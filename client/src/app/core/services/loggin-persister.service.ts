@@ -35,15 +35,6 @@ export class LogginPersisterService {
       });
   }
 
-  addSignalrConnectionId(connectionId: string) {
-    this.LoggedUser.pipe(take(1)).subscribe((user) => {
-      if (user) {
-        user.signalrConnectionId = connectionId;
-        this.loggedUserSource.next(user);
-      }
-    });
-  }
-
   signOut() {
     localStorage.removeItem('token');
     this.loggedUserSource.next(null);

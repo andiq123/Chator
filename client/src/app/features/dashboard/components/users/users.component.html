@@ -8,8 +8,8 @@
                 {{user.userName | titlecase}}
             </div>
             <div class="online">
-                <p *ngIf="user.signalrConnectionId" class="online">Online</p>
-                <p *ngIf="!user.signalrConnectionId" class="offline">Offline</p>
+                <p *ngIf="user.isOnline" class="online">Online</p>
+                <p *ngIf="!user.isOnline" class="offline">Offline</p>
             </div>
         </mat-card>
     </mat-card>
