@@ -1,0 +1,17 @@
+<mat-form-field appearance="fill">
+    <mat-label>{{label}}</mat-label>
+    <input matInput [formControl]="$any(ngControl.control)" [type]="type" [placeholder]="label">
+    <mat-error *ngIf="ngControl.touched && ngControl.invalid">
+        <mat-error *ngIf="ngControl.control.errors['required']">
+            {{label}} is required
+        </mat-error>
+        <mat-error *ngIf="ngControl.control.errors['minlength'] as minLength">
+            {{label}} must be at least {{minLength.requiredLength}} characters.
+            {{minLength.requiredLength - minLength.actualLength}} characters Remaining
+        </mat-error>
+        <mat-error *ngIf="ngControl.control.errors['maxlength'] as maxLength">
+            {{label}} must be at most {{maxLength.requiredLength}} characters
+            you have put {{maxLength.actualLength}} characters
+        </mat-error>
+    </mat-error>
+</mat-form-field>

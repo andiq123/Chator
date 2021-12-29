@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable, of, Subscription } from 'rxjs';
 import { LogginPersisterService } from 'src/app/core/services/loggin-persister.service';
+import { SnackBarService } from 'src/app/core/services/snack-bar.service';
 import { InputField } from 'src/app/shared/models/input-field.interface';
 import { User } from 'src/app/shared/models/user.interface';
 import { UserToUpdateDto } from '../../dashboard/Dtos/userToUpdateDto.interface';
@@ -14,10 +15,13 @@ import { UsersService } from '../../dashboard/services/users.service';
 })
 export class EditProfileComponent implements OnInit {
   public LoggedUser?: User;
-  fields: InputField[] = [];
+  formGroup!: FormGroup;
+
   constructor(
     private logginPersiter: LogginPersisterService,
-    private usersService: UsersService
+    private usersService: UsersService,
+    private fb: FormBuilder,
+    private snackBar: SnackBarService
   ) {}
 
   ngOnInit(): void {
@@ -28,69 +32,49 @@ export class EditProfileComponent implements OnInit {
     this.logginPersiter.LoggedUser.subscribe((user: User | null) => {
       if (!user) return;
       this.LoggedUser = user;
-      this.generateFields();
+      this.createForm();
     });
   }
 
-  generateFields() {
-    if (!this.LoggedUser) return;
-    this.fields = [];
-    this.fields.push({
-      type: 'text',
-      label: 'Username',
-      name: 'username',
-      value: this.LoggedUser.userName,
-      placeholder: 'Enter your username',
-      minLength: 3,
-      maxLength: 10,
-      validators: [
-        Validators.required,
-        Validators.minLength(3),
-        Validators.maxLength(10),
-      ],
-    });
-    this.fields.push({
-      type: 'text',
-      label: 'Description',
-      name: 'description',
-      value: this.LoggedUser.description,
-      placeholder: 'Enter your description',
-      minLength: 3,
-      maxLength: 100,
-      validators: [
-        Validators.required,
-        Validators.minLength(3),
-        Validators.maxLength(100),
-      ],
-    });
-    this.fields.push({
-      type: 'file',
-      label: 'Profile picture',
-      name: 'profilePicture',
-      value: this.LoggedUser.getPhotoUrl(),
-      placeholder: 'Change your profile picture',
+  createForm() {
+    // create the form to edit the user using form builder
+    this.formGroup = this.fb.group({
+      username: [this.LoggedUser.userName, Validators.required],
+      description: [this.LoggedUser.description, Validators.required],
     });
   }
 
   photoFile?: object;
   async onFileSelected(event: any) {
     const file: File = event.target.files[0];
-    return this.usersService.photoTest(file).subscribe((user: User) => {
-      this.logginPersiter.setLoggedUser(user);
+
+    return this.usersService.photoTest(file).subscribe({
+      next: (user: User) => {
+        this.logginPersiter.setLoggedUser(user);
+        this.snackBar.success('Profile image updated successfully');
+      },
+      error: () => {
+        this.snackBar.error("Error updating user's profile");
+      },
     });
   }
 
-  onSubmit(values: any) {
+  onSubmit() {
     if (!this.LoggedUser) return;
-    const { username, description } = values;
+    const { username, description } = this.formGroup.value;
     const userToUpdate: UserToUpdateDto = {
       username,
       description,
     };
-    this.usersService
-      .updateUser(this.LoggedUser.id, userToUpdate)
-      .subscribe((user: User) => {
+    this.snackBar.info("Updating user's profile...");
+    this.usersService.updateUser(this.LoggedUser.id, userToUpdate).subscribe({
+      next: (user: User) => {
         this.logginPersiter.setLoggedUser(user);
-      });
+        this.snackBar.success('Profile updated successfully');
+      },
+      error: () => {
+        this.snackBar.error("Error updating user's profile");
+      },
+    });
   }
 }

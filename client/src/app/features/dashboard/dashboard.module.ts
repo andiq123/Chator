@@ -9,12 +9,12 @@ import { MessageComponent } from './components/message/message.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
+  imports: [SharedModule, CommonModule, DashboardRoutingModule],
   declarations: [
     DashboardComponent,
     UsersComponent,
     TalkSectionComponent,
     MessageComponent,
   ],
-  imports: [CommonModule, SharedModule, DashboardRoutingModule],
 })
 export class DashboardModule {}

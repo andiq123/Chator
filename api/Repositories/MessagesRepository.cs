@@ -47,8 +47,12 @@ public class MessagesRepository : IMessagesRepository
     }
 
 
-    public Task<Message> UpdateMessage(string message)
+    public async Task<Message> UpdateMessage(Guid messageId, string loggedUserId, string text)
     {
-        throw new NotImplementedException();
+        var message = await GetMessage(messageId);
+        if (message.SenderId != loggedUserId) throw new Exception("You are not allowed to update this message");
+        message.Text = text;
+        await _context.SaveChangesAsync();
+        return message;
     }
 }

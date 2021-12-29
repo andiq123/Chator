@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, take } from 'rxjs';
+import { Observable } from 'rxjs';
 import { LogginPersisterService } from 'src/app/core/services/loggin-persister.service';
 import { SignalrService } from 'src/app/core/services/signalr.service';
 import { User } from 'src/app/shared/models/user.interface';
@@ -36,9 +36,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.populateUsers();
     await this.signalrService.startConnection();
     this.ListenForConnections();
-    this.signalrService.usersConnected$.subscribe((users) => {
-      this.mapConnectedUsers(users);
-    });
   }
 
   mapConnectedUsers(usersId: string[]) {
@@ -63,6 +60,31 @@ export class DashboardComponent implements OnInit, OnDestroy {
       if (!connectedUser) return;
       connectedUser.isOnline = !!connectedUser;
       this.sortUsers();
+    });
+
+    this.signalrService.usersConnected$.subscribe((users) => {
+      this.mapConnectedUsers(users);
+    });
+
+    this.signalrService.RecieveMessage$.subscribe((message) => {
+      this.messages = [...this.messages, message];
+    });
+
+    this.signalrService.DeletedMessage$.subscribe((messageId) => {
+      this.deleteMessage(messageId);
+    });
+
+    this.signalrService.EditedMessage$.subscribe(({ messageId, text }) => {
+      this.updateMessage(messageId, text);
+    });
+  }
+
+  updateMessage(messageId: string, text: string) {
+    this.messages = this.messages.map((message) => {
+      if (message.id === messageId) {
+        message.text = text;
+      }
+      return message;
     });
   }
 
@@ -89,14 +111,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .createMessage(messageToAddDto)
       .subscribe((message: Message) => {
         this.messages = [...this.messages, message];
+        this.signalrService.sendMessage(message);
       });
   }
 
   populateUsers() {
     this.userService.getUsers().subscribe((users) => {
       this.users = users.map((x) => Object.assign(new User(), x));
-      this.otherUser = this.users[0];
-      this.loadMessages();
+      //debug only
+      // this.otherUser = this.users[0];
+      // this.loadMessages();
     });
   }
 
@@ -106,8 +130,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   deleteMessage(messageId: string) {
+    this.messages = this.messages.filter((x) => x.id !== messageId);
+  }
+
+  deleteMessageReq(messageId: string) {
     this.messageService.deleteMessage(messageId).subscribe(() => {
-      this.messages = this.messages.filter((x) => x.id !== messageId);
+      this.deleteMessage(messageId);
+      this.signalrService.deleteMessage(this.otherUser.id, messageId);
     });
+  }
+
+  editMessage(message: any) {
+    if (!message) return;
+    this.messageService
+      .editMessage(message.id, message.text)
+      .subscribe((messageFromDb: Message) => {
+        this.signalrService.editMessage(
+          this.otherUser.id,
+          messageFromDb.id,
+          messageFromDb.text
+        );
+      });
   }
 }

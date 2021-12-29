@@ -28,4 +28,10 @@ export class MessagesService {
   deleteMessage(id: string): Observable<void> {
     return this.http.delete<void>(this.baseUrl + '/messages/' + id);
   }
+
+  editMessage(messageId: string, message: string): Observable<Message> {
+    return this.http.put<Message>(this.baseUrl + '/messages/' + messageId, {
+      text: message,
+    });
+  }
 }

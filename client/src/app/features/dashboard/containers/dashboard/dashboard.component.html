@@ -2,7 +2,8 @@
     <app-users [users]="users" (onSelectUser)="onSelectUser($event)"></app-users>
     <div *ngIf="User$ | async as user">
         <app-talk-section *ngIf="otherUser" [user]="user" [otherUser]="otherUser" [messages]="messages"
-            (onDeleteMessage)="deleteMessage($event)" (onMessageSent)="onSubmitMessage($event)">
+            (onDeleteMessage)="deleteMessageReq($event)" (onEditMessage)="editMessage($event)"
+            (onMessageSent)="onSubmitMessage($event)">
         </app-talk-section>
     </div>
 </div>

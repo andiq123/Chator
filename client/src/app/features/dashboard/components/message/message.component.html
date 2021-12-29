@@ -3,12 +3,13 @@
         <button mat-button (click)="deleteMessage()">
             <mat-icon>delete_outline</mat-icon>
         </button>
-        <button mat-button>
+        <button mat-button (click)="setEdit()">
             <mat-icon>edit</mat-icon>
         </button>
     </div>
     <div class="message-container">
-        {{message.text}}
+        <input type="text" matInput [(ngModel)]="message.text" *ngIf="this.isEditing">
+        <p *ngIf="!this.isEditing">{{message.text}}</p>
     </div>
     <div class="image-container">
         <img [src]="isSender ? user.getPhotoUrl() : otherUser.getPhotoUrl() ?? 'assets/defaultProfile.png'"

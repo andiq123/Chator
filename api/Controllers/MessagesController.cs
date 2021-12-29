@@ -59,6 +59,23 @@ public class MessagesController : BaseController
             return NotFound(ex.Message);
         }
     }
+
+    [HttpPut("{messageId}")]
+    public async Task<ActionResult<Message>> EditMessage(string messageId, MessageToUpdateDto messageToUpdateDto)
+    {
+        try
+        {
+            var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var parsed = Guid.Parse(messageId);
+            var message = await _messagesRepository.UpdateMessage(parsed, userId, messageToUpdateDto.Text);
+            return Ok(message);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
+
 }
 
 

@@ -7,9 +7,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
-import { FormContainerComponent } from './components/form-container/form-container.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { MatMenuModule } from '@angular/material/menu';
+import { TextInputComponent } from './components/text-input/text-input.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 const MaterialsModules = [
   MatButtonModule,
@@ -19,21 +21,25 @@ const MaterialsModules = [
   MatInputModule,
   MatCardModule,
   MatToolbarModule,
+  MatMenuModule,
+  MatSnackBarModule,
 ];
 
 @NgModule({
-  declarations: [FormContainerComponent],
+  declarations: [TextInputComponent],
   imports: [
     CommonModule,
     MaterialsModules,
     ReactiveFormsModule,
     HttpClientModule,
+    FormsModule,
   ],
   exports: [
     MaterialsModules,
-    FormContainerComponent,
     ReactiveFormsModule,
     HttpClientModule,
+    TextInputComponent,
+    FormsModule,
   ],
 })
 export class SharedModule {}

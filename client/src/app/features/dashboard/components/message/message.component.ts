@@ -13,6 +13,8 @@ export class MessageComponent implements OnInit {
   @Input() message!: Message;
   @Input() isSender: boolean = false;
   @Output() onDeleteMessage: EventEmitter<string> = new EventEmitter<string>();
+  @Output() onEditMessage: EventEmitter<Message> = new EventEmitter<Message>();
+  isEditing: boolean = false;
 
   constructor() {}
 
@@ -20,5 +22,13 @@ export class MessageComponent implements OnInit {
 
   deleteMessage() {
     this.onDeleteMessage.emit(this.message.id);
+  }
+
+  setEdit() {
+    if (this.isEditing) {
+      this.onEditMessage.next(this.message);
+    }
+
+    this.isEditing = !this.isEditing;
   }
 }

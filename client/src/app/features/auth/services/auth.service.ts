@@ -9,39 +9,26 @@ import { environment } from 'src/environments/environment';
 @Injectable()
 export class AuthService {
   baseUrl = environment.baseUrl;
-  constructor(
-    private http: HttpClient,
-    private router: Router,
-    private logginPersister: LogginPersisterService
-  ) {}
+  constructor(private http: HttpClient) {}
 
   login(creds: {
     username: string;
     password: string;
   }): Observable<AuthResponse> {
-    return this.http
-      .post<AuthResponse>(`${this.baseUrl}/auth/login`, creds)
-      .pipe(
-        tap((data: AuthResponse) => {
-          localStorage.setItem('token', data.token);
-          this.logginPersister.setLoggedUser();
-          this.router.navigate(['/dashboard']);
-        })
-      );
+    return this.http.post<AuthResponse>(`${this.baseUrl}/auth/login`, creds);
   }
 
   register(creds: {
     username: string;
     password: string;
   }): Observable<AuthResponse> {
-    return this.http
-      .post<AuthResponse>(`${this.baseUrl}/auth/register`, creds)
-      .pipe(
-        tap((data: AuthResponse) => {
-          localStorage.setItem('token', data.token);
-          this.logginPersister.setLoggedUser();
-          this.router.navigate(['/dashboard']);
-        })
-      );
+    return this.http.post<AuthResponse>(`${this.baseUrl}/auth/register`, creds);
+    // .pipe(
+    //   tap((data: AuthResponse) => {
+    //     localStorage.setItem('token', data.token);
+    //     this.logginPersister.setLoggedUser();
+    //     this.router.navigate(['/dashboard']);
+    //   })
+    // );
   }
 }

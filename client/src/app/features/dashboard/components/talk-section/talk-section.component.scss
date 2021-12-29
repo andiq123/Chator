@@ -15,5 +15,13 @@
       margin-bottom: 10px;
       overflow-y: auto;
     }
+    .messages-sender {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      input {
+        flex: 1;
+      }
+    }
   }
 }

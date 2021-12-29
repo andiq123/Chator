@@ -4,4 +4,24 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  mat-card {
+    width: 30%;
+    padding: 50px;
+    border-radius: 30px;
+    form {
+      display: flex;
+      flex-flow: column;
+      gap: 5px;
+      textarea {
+        border: 1px solid rgb(141, 137, 137);
+        border-radius: 20px;
+        padding: 10px;
+        width: 95%;
+        margin-bottom: 10px;
+      }
+      app-text-input {
+        width: 100%;
+      }
+    }
+  }
 }

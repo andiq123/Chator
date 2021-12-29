@@ -9,7 +9,7 @@ public class ChatHub : Hub
         var connectionId = Context.ConnectionId;
         // add user to list
         Presence.AddUser(userId, connectionId);
-        System.Console.WriteLine("Connected: " + Presence.GetConnectedUsers().Count());
+
         // send to other users
         await Clients.Others.SendAsync("UserConnected", userId);
     }
@@ -19,7 +19,7 @@ public class ChatHub : Hub
         var connectionId = Context.ConnectionId;
         // remove user from list
         var userId = Presence.RemoveUser(connectionId);
-        System.Console.WriteLine("Disconected: " + Presence.GetConnectedUsers().Count());
+
         // send to other users
         await Clients.Others.SendAsync("UserDisconnected", userId);
     }
@@ -29,5 +29,28 @@ public class ChatHub : Hub
         var users = Presence.GetConnectedUsers();
         await Clients.Caller.SendAsync("GetAllUsersOnline", users);
     }
+
+
+    public async Task SendMessage(MessageViewModel message)
+    {
+        var recieverUser = Presence.GetConnectedUser(message.RecieverId);
+        if (recieverUser != null)
+            await Clients.Client(recieverUser.ConnectionId).SendAsync("ReceiveMessage", message);
+    }
+
+    public async Task DeleteMessage(string userId, string messageId)
+    {
+        var recieverUser = Presence.GetConnectedUser(userId);
+        if (recieverUser != null)
+            await Clients.Client(recieverUser.ConnectionId).SendAsync("MessageDeleted", messageId);
+    }
+
+    public async Task EditMessage(string userId, string messageId, string text)
+    {
+        var recieverUser = Presence.GetConnectedUser(userId);
+        if (recieverUser != null)
+            await Clients.Client(recieverUser.ConnectionId).SendAsync("MessageEdited", messageId, text);
+    }
+
 
 }

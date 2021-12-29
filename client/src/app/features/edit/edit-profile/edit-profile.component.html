@@ -1,5 +1,20 @@
-<div *ngIf="LoggedUser as user">
-    <app-form-container [fields]="fields" [title]="'Edit Profile'" (onSubmit)="onSubmit($event)"
-        (onFileSelected)="onFileSelected($event)"></app-form-container>
-
+<div *ngIf="LoggedUser as user" class="edit">
+    <mat-card>
+        <mat-card-title>Edit Profile</mat-card-title>
+        <form [formGroup]="formGroup" (submit)="onSubmit()">
+            <app-text-input [formControl]="$any(formGroup.controls['username'])" [label]="'Username'"></app-text-input>
+            <textarea matInput placeholder="Enter your description here..." formControlName="description" cols="30"
+                rows="5"></textarea>
+            <div class="image-area">
+                <div class="image-holder">
+                    <img [src]="user.getPhotoUrl()" [alt]="user.userName">
+                </div>
+                <div class="image-upload">
+                    <button type="button" mat-raised-button (click)="fileInput.click()">Choose File</button>
+                    <input hidden #fileInput type="file" id="file" (change)="onFileSelected($event)" accept="image/*">
+                </div>
+            </div>
+            <button mat-flat-button color="primary" [disabled]="formGroup.invalid" type="submit">Submit Edit</button>
+        </form>
+    </mat-card>
 </div>

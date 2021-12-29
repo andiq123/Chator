@@ -13,3 +13,18 @@ body {
   max-width: 90%;
   margin: 10px auto 0 auto;
 }
+
+.snackbar-error {
+  background-color: rgb(90, 86, 86);
+  color: rgb(231, 37, 37);
+}
+
+.snackbar-info {
+  background-color: rgb(90, 86, 86);
+  color: rgb(218, 218, 68);
+}
+
+.snackbar-success {
+  background-color: rgb(90, 86, 86);
+  color: rgb(68, 199, 68);
+}

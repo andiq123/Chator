@@ -1,3 +1,17 @@
-<div class="register" *ngIf="fields">
-    <app-form-container [fields]="fields" [title]="'Register'" (onSubmit)="submit($event)"></app-form-container>
+<div class="register">
+    <mat-card>
+        <mat-card-title>Register</mat-card-title>
+        <form [formGroup]="formGroup" (ngSubmit)="submit()">
+            <app-text-input [formControl]="$any(formGroup.controls['username'])" [label]="'Username'"></app-text-input>
+            <textarea matInput placeholder="Enter your description here..." formControlName="description" cols="30"
+                rows="5"></textarea>
+            <app-text-input [formControl]="$any(formGroup.controls['password'])" [label]="'Password'"
+                [type]="'password'">
+            </app-text-input>
+            <app-text-input [formControl]="$any(formGroup.controls['confirmPassword'])" [label]="'Confirm Password'"
+                [type]="'password'">
+            </app-text-input>
+            <button mat-flat-button color="primary" [disabled]="formGroup.invalid">Register</button>
+        </form>
+    </mat-card>
 </div>

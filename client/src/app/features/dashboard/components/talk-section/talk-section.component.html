@@ -5,14 +5,15 @@
     <mat-card-content class="body">
         <div class="messages-shower" #messageShower>
             <app-message *ngFor="let message of messages" [message]="message" [isSender]="message.senderId === user.id"
-                (onDeleteMessage)="deleteMessage($event)" [user]="user" [otherUser]="otherUser">
+                (onDeleteMessage)="deleteMessage($event)" [user]="user" [otherUser]="otherUser"
+                (onEditMessage)="editMessage($event)">
             </app-message>
         </div>
-
+        <br />
         <div class="messages-sender">
-            <app-form-container [fields]="fields" [settings]="{registerForm:false}" (onSubmit)="onSubmitForm($event)"
-                [resetOnSubmit]="true">
-            </app-form-container>
+            <input matInput type="text" placeholder="Enter your message here..." [(ngModel)]="message"
+                (keydown.enter)="onSubmitForm()">
+            <button mat-raised-button [disabled]="!message" (click)="onSubmitForm()">Send</button>
         </div>
     </mat-card-content>
 </mat-card>

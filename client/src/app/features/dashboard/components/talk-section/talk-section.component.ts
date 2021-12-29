@@ -28,8 +28,8 @@ export class TalkSectionComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() onMessageSent = new EventEmitter<MessageToAddDto>();
   @ViewChild('messageShower') messageContainer!: ElementRef;
   @Output() onDeleteMessage: EventEmitter<string> = new EventEmitter<string>();
-  fields!: InputField[];
-
+  @Output() onEditMessage: EventEmitter<Message> = new EventEmitter<Message>();
+  message: string = '';
   constructor() {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -37,8 +37,24 @@ export class TalkSectionComponent implements OnInit, AfterViewInit, OnChanges {
     this.scrollToBottom();
   }
 
-  ngOnInit(): void {
-    this.generateFields();
+  ngOnInit(): void {}
+
+  onSubmitForm() {
+    if (!this.message) return;
+    const messageToAddDto: MessageToAddDto = {
+      text: this.message,
+      recieverId: this.otherUser.id,
+    };
+    this.onMessageSent.emit(messageToAddDto);
+    this.message = '';
+  }
+
+  deleteMessage(id: string) {
+    this.onDeleteMessage.emit(id);
+  }
+
+  editMessage(message: Message) {
+    this.onEditMessage.next(message);
   }
 
   ngAfterViewInit(): void {
@@ -50,31 +66,5 @@ export class TalkSectionComponent implements OnInit, AfterViewInit, OnChanges {
       this.messageContainer.nativeElement.scrollTop =
         this.messageContainer.nativeElement.scrollHeight;
     }, 10);
-  }
-
-  generateFields() {
-    this.fields = [
-      {
-        name: 'message',
-        type: 'textarea',
-        label: 'Message',
-        value: '',
-        placeholder: 'Type your message here',
-        validators: [Validators.required],
-      },
-    ];
-  }
-
-  onSubmitForm(values: any) {
-    const { message } = values;
-    const messageToAddDto: MessageToAddDto = {
-      text: message,
-      recieverId: this.otherUser.id,
-    };
-    this.onMessageSent.emit(messageToAddDto);
-  }
-
-  deleteMessage(id: string) {
-    this.onDeleteMessage.emit(id);
   }
 }

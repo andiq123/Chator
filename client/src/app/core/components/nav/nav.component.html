@@ -2,10 +2,14 @@
     <mat-toolbar-row>
         <button mat-button routerLink="/">Chator</button>
         <div class="right-section">
-            <div *ngIf="LoggedUser | async; else notLogged" class="nav-buttons">
-                <button mat-flat-button routerLink="/dashboard">Dashboard</button>
-                <button mat-flat-button routerLink="/edit">Edit Profile</button>
-                <button mat-flat-button (click)="signOut()">Sign Out</button>
+            <div *ngIf="LoggedUser | async as user; else notLogged" class="nav-buttons">
+                <button mat-button routerLink="/dashboard">Dashboard</button>
+                <button mat-button [matMenuTriggerFor]="menu">{{user.userName | titlecase}} <mat-icon>
+                        arrow_drop_down</mat-icon></button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item routerLink="/edit">Edit Profile</button>
+                    <button mat-menu-item (click)="signOut()">Sign Out</button>
+                </mat-menu>
             </div>
             <ng-template #notLogged>
                 <span>
