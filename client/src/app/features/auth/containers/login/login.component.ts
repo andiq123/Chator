@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { TokenStorageHelper } from 'src/app/core/helpers/token-storage.helper';
 import { LogginPersisterService } from 'src/app/core/services/loggin-persister.service';
 import { SnackBarService } from 'src/app/core/services/snack-bar.service';
 import { AuthResponse } from 'src/app/shared/models/auth-response.interface';
@@ -30,7 +31,10 @@ export class LoginComponent implements OnInit {
     this.snackBar.info('Logging in...');
     this.authService.login(this.formGroup.value).subscribe({
       next: (data: AuthResponse) => {
-        localStorage.setItem('token', data.token);
+        TokenStorageHelper.setAccessToken(
+          data.token,
+          this.formGroup.value.rememberMe
+        );
         this.logginPersister.setLoggedUser();
         this.router.navigate(['/dashboard']);
         this.snackBar.success('Logged In');
@@ -59,6 +63,7 @@ export class LoginComponent implements OnInit {
           Validators.maxLength(10),
         ],
       ],
+      rememberMe: [false],
     });
   }
 }

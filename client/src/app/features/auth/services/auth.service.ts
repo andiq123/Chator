@@ -23,12 +23,5 @@ export class AuthService {
     password: string;
   }): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/auth/register`, creds);
-    // .pipe(
-    //   tap((data: AuthResponse) => {
-    //     localStorage.setItem('token', data.token);
-    //     this.logginPersister.setLoggedUser();
-    //     this.router.navigate(['/dashboard']);
-    //   })
-    // );
   }
 }

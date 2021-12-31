@@ -6,6 +6,7 @@
             <app-text-input [formControl]="$any(formGroup.controls['password'])" [label]="'Password'"
                 [type]="'password'">
             </app-text-input>
+            <mat-checkbox type="checkbox" formControlName="rememberMe">Remeber me</mat-checkbox>
             <button mat-flat-button color="primary" [disabled]="formGroup.invalid">Login</button>
         </form>
     </mat-card>

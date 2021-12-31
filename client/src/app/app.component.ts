@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TokenStorageHelper } from './core/helpers/token-storage.helper';
 import { LogginPersisterService } from './core/services/loggin-persister.service';
 
 @Component({
@@ -10,7 +11,7 @@ export class AppComponent implements OnInit {
   title = 'client';
   constructor(private logginPersisterService: LogginPersisterService) {}
   ngOnInit(): void {
-    if (localStorage.getItem('token')) {
+    if (TokenStorageHelper.getAccessToken()) {
       this.logginPersisterService.setLoggedUser();
     }
   }

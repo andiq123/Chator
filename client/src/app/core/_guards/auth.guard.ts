@@ -7,6 +7,7 @@ import {
   UrlTree,
 } from '@angular/router';
 import { map, Observable } from 'rxjs';
+import { TokenStorageHelper } from '../helpers/token-storage.helper';
 import { LogginPersisterService } from '../services/loggin-persister.service';
 
 @Injectable({
@@ -25,15 +26,18 @@ export class AuthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    if (route?.routeConfig?.path == 'auth' && !localStorage.getItem('token')) {
+    if (
+      route?.routeConfig?.path == 'auth' &&
+      !TokenStorageHelper.getAccessToken()
+    ) {
       return true;
     } else if (
       route?.routeConfig?.path == 'auth' &&
-      localStorage.getItem('token')
+      TokenStorageHelper.getAccessToken()
     ) {
       this.router.navigate(['/dashboard']);
       return false;
-    } else if (!localStorage.getItem('token')) {
+    } else if (!TokenStorageHelper.getAccessToken()) {
       this.router.navigate(['/auth/login']);
       return false;
     }

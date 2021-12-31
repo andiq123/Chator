@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { catchError, ReplaySubject, take } from 'rxjs';
 import { User } from 'src/app/shared/models/user.interface';
 import { environment } from 'src/environments/environment';
+import { TokenStorageHelper } from '../helpers/token-storage.helper';
 
 @Injectable({ providedIn: 'root' })
 export class LogginPersisterService {
@@ -23,7 +24,7 @@ export class LogginPersisterService {
       .get<User>(`${this.baseUrl}/users/loggedUser`)
       .pipe(
         catchError((err: any) => {
-          localStorage.removeItem('token');
+          TokenStorageHelper.removeAccessToken();
           this.loggedUserSource.next(null);
           throw err;
         })
@@ -36,7 +37,7 @@ export class LogginPersisterService {
   }
 
   signOut() {
-    localStorage.removeItem('token');
+    TokenStorageHelper.removeAccessToken();
     this.loggedUserSource.next(null);
     this.router.navigate(['/auth/login']);
   }

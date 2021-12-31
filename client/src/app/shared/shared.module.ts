@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatMenuModule } from '@angular/material/menu';
 import { TextInputComponent } from './components/text-input/text-input.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 const MaterialsModules = [
   MatButtonModule,
@@ -23,6 +24,7 @@ const MaterialsModules = [
   MatToolbarModule,
   MatMenuModule,
   MatSnackBarModule,
+  MatCheckboxModule,
 ];
 
 @NgModule({

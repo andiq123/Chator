@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LogginPersisterService } from 'src/app/core/services/loggin-persister.service';
 import { SignalrService } from 'src/app/core/services/signalr.service';
+import { SnackBarService } from 'src/app/core/services/snack-bar.service';
 import { User } from 'src/app/shared/models/user.interface';
 import { MessageToAddDto } from '../../Dtos/messageToAdd.interface';
 import { Message } from '../../models/message.interface';
@@ -24,7 +25,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private userService: UsersService,
     private loginPersister: LogginPersisterService,
     private messageService: MessagesService,
-    private signalrService: SignalrService
+    private signalrService: SignalrService,
+    private snackBar: SnackBarService
   ) {}
 
   ngOnDestroy(): void {
@@ -72,10 +74,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.signalrService.DeletedMessage$.subscribe((messageId) => {
       this.deleteMessage(messageId);
+      this.snackBar.info('The other user deleted a message');
     });
 
     this.signalrService.EditedMessage$.subscribe(({ messageId, text }) => {
       this.updateMessage(messageId, text);
+      this.snackBar.info('The other user edited a message');
     });
   }
 
@@ -137,6 +141,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.messageService.deleteMessage(messageId).subscribe(() => {
       this.deleteMessage(messageId);
       this.signalrService.deleteMessage(this.otherUser.id, messageId);
+      this.snackBar.success('Message deleted');
     });
   }
 
@@ -150,6 +155,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           messageFromDb.id,
           messageFromDb.text
         );
+        this.snackBar.success('Message edited');
       });
   }
 }

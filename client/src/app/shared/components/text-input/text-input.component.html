@@ -13,5 +13,20 @@
             {{label}} must be at most {{maxLength.requiredLength}} characters
             you have put {{maxLength.actualLength}} characters
         </mat-error>
+        <mat-error *ngIf="ngControl.control.errors['MatchPassword']  ">
+            Passwords do not match
+        </mat-error>
+        <mat-error *ngIf="ngControl.control.errors['AtLeastOneNumber']  ">
+            Your password must contain at least one number
+        </mat-error>
+        <mat-error *ngIf="ngControl.control.errors['AtLeastABigLetter']  ">
+            Your password must contain at least one big letter
+        </mat-error>
+        <mat-error *ngIf="ngControl.control.errors['AtLeastALowerCaseLetter']  ">
+            Your password must contain at least one lower letter
+        </mat-error>
+        <mat-error *ngIf="ngControl.control.errors['AtLeastASpecialCharacter']  ">
+            Your password must contain at least one special character
+        </mat-error>
     </mat-error>
 </mat-form-field>
