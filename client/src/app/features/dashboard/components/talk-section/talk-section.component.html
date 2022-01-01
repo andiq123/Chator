@@ -1,8 +1,13 @@
 <mat-card class="talk-container">
-    <mat-card-title class="header">
-        <h3>{{ otherUser.userName | titlecase}} | {{otherUser.description }} </h3>
-    </mat-card-title>
     <mat-card-content class="body">
+        <div class="header">
+            <div class="info">
+                {{ otherUser.userName | titlecase}}
+                <mat-icon> chat</mat-icon>
+                Status:
+                {{otherUser.description | titlecase}}
+            </div>
+        </div>
         <div class="messages-shower" #messageShower>
             <app-message *ngFor="let message of messages" [message]="message" [isSender]="message.senderId === user.id"
                 (onDeleteMessage)="deleteMessage($event)" [user]="user" [otherUser]="otherUser"

@@ -8,8 +8,12 @@
                 {{user.userName | titlecase}}
             </div>
             <div class="online">
-                <p *ngIf="user.isOnline" class="online">Online</p>
-                <p *ngIf="!user.isOnline" class="offline">Offline</p>
+                <p *ngIf="user.isOnline" class="online">
+                    <mat-icon> chat_bubble</mat-icon>
+                </p>
+                <p *ngIf="!user.isOnline" class="offline">
+                    <mat-icon> chat_bubble_outline</mat-icon>
+                </p>
             </div>
         </mat-card>
     </mat-card>
