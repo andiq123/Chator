@@ -4,8 +4,11 @@
         <div class="right-section">
             <div *ngIf="LoggedUser | async as user; else notLogged" class="nav-buttons">
                 <button mat-button routerLink="/dashboard">Dashboard</button>
-                <button mat-button [matMenuTriggerFor]="menu">{{user.userName | titlecase}} <mat-icon>
-                        arrow_drop_down</mat-icon></button>
+                <button mat-button [matMenuTriggerFor]="menu">
+                    <mat-icon mat-list-icon>account_circle</mat-icon>
+                    {{user.userName | titlecase}}
+                    <mat-icon> arrow_drop_down</mat-icon>
+                </button>
                 <mat-menu #menu="matMenu">
                     <button mat-menu-item routerLink="/edit">Edit Profile</button>
                     <button mat-menu-item (click)="signOut()">Sign Out</button>

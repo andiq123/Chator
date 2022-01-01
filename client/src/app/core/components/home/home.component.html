@@ -1,10 +1,27 @@
-<mat-card>
-    <mat-card-title>Hello, Welcome to Chator, to continue please use the commands below
+<mat-card *ngIf="User$ | async else notLogged">
+    <mat-card-title>You can chat now! go find someone to chat with!
     </mat-card-title>
     <mat-card-content>
         <div class="buttons">
-            <button mat-raised-button color="primary" routerLink="auth/register"> Register </button>
-            <button mat-raised-button color="primary" routerLink="auth/login"> Login </button>
+            <button mat-raised-button color="primary" routerLink="dashboard">
+                Go to Dashboard
+            </button>
         </div>
     </mat-card-content>
 </mat-card>
+<ng-template #notLogged>
+    <mat-card>
+        <mat-card-title>Hello, Welcome to Chator, to continue please use the commands below
+        </mat-card-title>
+        <mat-card-content>
+            <div class="buttons">
+                <button mat-raised-button color="primary" routerLink="auth/register">
+                    Register
+                </button>
+                <button mat-raised-button color="primary" routerLink="auth/login">
+                    Login
+                </button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</ng-template>

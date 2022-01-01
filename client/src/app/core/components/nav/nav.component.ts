@@ -16,7 +16,7 @@ export class NavComponent implements OnInit {
     this.LoggedUser = this.logginPersister.LoggedUser;
   }
 
-  signOut() {
-    this.logginPersister.signOut();
+  async signOut() {
+    await this.logginPersister.signOut();
   }
 }

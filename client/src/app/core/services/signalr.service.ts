@@ -32,37 +32,28 @@ export class SignalrService {
   private userDisconnectedSource = new Subject<string>();
   public UserDisconnected$ = this.userDisconnectedSource.asObservable();
 
-  private usersConnectedSource = new ReplaySubject<string[]>();
+  private usersConnectedSource = new Subject<string[]>();
   public usersConnected$ = this.usersConnectedSource.asObservable();
 
   private baseUrl = environment.baseUrl.split('/api')[0];
-  constructor(private logginPersister: LogginPersisterService) {}
+  constructor() {}
 
-  async startConnection(): Promise<void> {
+  async startConnection(userId: string): Promise<void> {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${this.baseUrl}/chat`)
       .build();
 
     try {
       await this.hubConnection.start();
-      this.addMySelfOnline();
-      this.invokeGetAllUsersOnline();
+      this.addMySelfOnline(userId);
       this.listenToEvents();
     } catch (error) {
       console.log(error);
     }
   }
 
-  invokeGetAllUsersOnline() {
-    this.hubConnection?.invoke('GetAllUsersOnline');
-  }
-
-  addMySelfOnline() {
-    this.logginPersister.LoggedUser.pipe(take(1)).subscribe((user) => {
-      if (user) {
-        this.hubConnection?.invoke('AddMyselfOnline', user.id);
-      }
-    });
+  addMySelfOnline(userId: string) {
+    this.hubConnection?.invoke('AddMyselfOnline', userId);
   }
 
   listenToEvents() {
@@ -74,7 +65,6 @@ export class SignalrService {
 
     // user disconnected
     this.hubConnection?.on('UserDisconnected', (userId: string) => {
-      console.log(userId);
       this.usersConnected = this.usersConnected.filter((x) => x !== userId);
       this.userDisconnectedSource.next(userId);
     });
@@ -104,11 +94,9 @@ export class SignalrService {
   }
 
   disconnect() {
-    this.logginPersister.LoggedUser.pipe(take(1)).subscribe((user) => {
-      if (!user) return;
-      this.usersConnected = this.usersConnected.filter((x) => x !== user.id);
-      this.hubConnection?.stop();
-    });
+    this.usersConnected = [];
+    this.usersConnectedSource.next(this.usersConnected);
+    this.hubConnection?.stop();
   }
 
   sendMessage(message: Message) {

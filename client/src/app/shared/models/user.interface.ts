@@ -5,7 +5,7 @@ export class User {
   userName?: string;
   photoUrl?: string;
   description?: string;
-  isOnline?: boolean;
+  isOnline?: boolean = false;
   unreaMessages: number = 0;
 
   getPhotoUrl(): string {

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { LogginPersisterService } from 'src/app/core/services/loggin-persister.service';
 import { SignalrService } from 'src/app/core/services/signalr.service';
 import { SnackBarService } from 'src/app/core/services/snack-bar.service';
@@ -29,14 +29,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private snackBar: SnackBarService
   ) {}
 
-  ngOnDestroy(): void {
+  async ngOnDestroy() {
+    const user = await firstValueFrom(this.User$);
     this.signalrService.disconnect();
   }
 
   async ngOnInit() {
     this.User$ = this.loginPersister.LoggedUser;
     this.populateUsers();
-    await this.signalrService.startConnection();
+    const user = await firstValueFrom(this.User$);
+    await this.signalrService.startConnection(user.id);
     this.listenForSignalrActions();
   }
 
@@ -62,6 +64,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
 
     this.signalrService.usersConnected$.subscribe((users) => {
+      console.log(users);
       this.mapConnectedUsers(users);
     });
 
@@ -122,6 +125,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   onSelectUser(user: User) {
+    if (user.id === this.otherUser?.id) {
+      this.otherUser = undefined;
+      return;
+    }
     this.otherUser = user;
     this.loadMessages();
 

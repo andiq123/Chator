@@ -12,8 +12,10 @@ public class ChatHub : Hub
 
         // send to other users
         await Clients.Others.SendAsync("UserConnected", userId);
-    }
 
+        var users = Presence.GetConnectedUsers();
+        await Clients.Caller.SendAsync("GetAllUsersOnline", users);
+    }
     public override async Task OnDisconnectedAsync(Exception? ex)
     {
         var connectionId = Context.ConnectionId;
@@ -24,12 +26,6 @@ public class ChatHub : Hub
         await Clients.Others.SendAsync("UserDisconnected", userId);
     }
 
-    public async Task GetAllUsersOnline()
-    {
-        var users = Presence.GetConnectedUsers();
-        await Clients.Caller.SendAsync("GetAllUsersOnline", users);
-    }
-
 
     public async Task SendMessage(MessageViewModel message)
     {
@@ -37,20 +33,16 @@ public class ChatHub : Hub
         if (recieverUser != null)
             await Clients.Client(recieverUser.ConnectionId).SendAsync("ReceiveMessage", message);
     }
-
     public async Task DeleteMessage(string userId, string messageId)
     {
         var recieverUser = Presence.GetConnectedUser(userId);
         if (recieverUser != null)
             await Clients.Client(recieverUser.ConnectionId).SendAsync("MessageDeleted", messageId);
     }
-
     public async Task EditMessage(string userId, string messageId, string text)
     {
         var recieverUser = Presence.GetConnectedUser(userId);
         if (recieverUser != null)
             await Clients.Client(recieverUser.ConnectionId).SendAsync("MessageEdited", messageId, text);
     }
-
-
 }

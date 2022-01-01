@@ -13,6 +13,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { TextInputComponent } from './components/text-input/text-input.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatListModule } from '@angular/material/list';
 
 const MaterialsModules = [
   MatButtonModule,
@@ -25,6 +26,7 @@ const MaterialsModules = [
   MatMenuModule,
   MatSnackBarModule,
   MatCheckboxModule,
+  MatListModule,
 ];
 
 @NgModule({

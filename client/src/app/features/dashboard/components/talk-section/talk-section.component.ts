@@ -1,10 +1,18 @@
 import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+import {
   AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
@@ -30,6 +38,7 @@ export class TalkSectionComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() onDeleteMessage: EventEmitter<string> = new EventEmitter<string>();
   @Output() onEditMessage: EventEmitter<Message> = new EventEmitter<Message>();
   message: string = '';
+
   constructor() {}
 
   ngOnChanges(changes: SimpleChanges): void {

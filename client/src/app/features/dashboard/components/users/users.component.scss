@@ -1,6 +1,7 @@
 .users {
   overflow-y: auto;
   height: 85vh;
+
   .user-list {
     display: flex;
     flex-flow: column;
@@ -9,10 +10,14 @@
       display: flex;
       margin-top: 1vh;
       gap: 10px;
+
       cursor: pointer;
-      transition: background-color 100ms ease-in-out;
+      transition: background-color 100ms ease-in-out, transform 0.2s ease-in-out;
       &:hover {
         background-color: lighten($color: #424242, $amount: 2);
+      }
+      &:active {
+        transform: scale(0.95);
       }
       .image-container {
         width: 80px;
