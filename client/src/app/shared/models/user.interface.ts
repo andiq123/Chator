@@ -6,6 +6,7 @@ export class User {
   photoUrl?: string;
   description?: string;
   isOnline?: boolean;
+  unreaMessages: number = 0;
 
   getPhotoUrl(): string {
     if (this.photoUrl) {
