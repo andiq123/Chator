@@ -3,8 +3,10 @@ namespace api.Controllers;
 public class AuthController : BaseController
 {
     private readonly IAuthRepository _authRepository;
-    public AuthController(IAuthRepository authRepository)
+    private readonly IHubContext<ChatHub> _hub;
+    public AuthController(IAuthRepository authRepository, IHubContext<ChatHub> hub)
     {
+        _hub = hub;
         _authRepository = authRepository;
     }
 
@@ -29,6 +31,7 @@ public class AuthController : BaseController
         try
         {
             var token = await _authRepository.Register(userToCreateDto);
+            await _hub.Clients.All.SendAsync("RegisteredUser");
             return Ok(token);
         }
         catch (Exception ex)

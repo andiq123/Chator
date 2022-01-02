@@ -13,7 +13,7 @@ export class NavComponent implements OnInit {
   constructor(private logginPersister: LogginPersisterService) {}
 
   ngOnInit(): void {
-    this.LoggedUser = this.logginPersister.LoggedUser;
+    this.LoggedUser = this.logginPersister.LoggedUser$;
   }
 
   async signOut() {

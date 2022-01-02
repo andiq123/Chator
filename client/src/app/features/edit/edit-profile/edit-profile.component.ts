@@ -14,7 +14,7 @@ import { UsersService } from '../../dashboard/services/users.service';
   styleUrls: ['./edit-profile.component.scss'],
 })
 export class EditProfileComponent implements OnInit {
-  public LoggedUser?: User;
+  LoggedUser?: User;
   formGroup!: FormGroup;
 
   constructor(
@@ -29,7 +29,7 @@ export class EditProfileComponent implements OnInit {
   }
 
   loadUser() {
-    this.logginPersiter.LoggedUser.subscribe((user: User | null) => {
+    this.logginPersiter.LoggedUser$.subscribe((user: User | null) => {
       if (!user) return;
       this.LoggedUser = user;
       this.createForm();
@@ -45,7 +45,7 @@ export class EditProfileComponent implements OnInit {
   }
 
   photoFile?: object;
-  async onFileSelected(event: any) {
+  onFileSelected(event: any) {
     const file: File = event.target.files[0];
 
     return this.usersService.photoTest(file).subscribe({

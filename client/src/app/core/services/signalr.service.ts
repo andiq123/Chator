@@ -33,7 +33,10 @@ export class SignalrService {
   public UserDisconnected$ = this.userDisconnectedSource.asObservable();
 
   private usersConnectedSource = new Subject<string[]>();
-  public usersConnected$ = this.usersConnectedSource.asObservable();
+  public UsersConnected$ = this.usersConnectedSource.asObservable();
+
+  private registeredUserSource = new Subject<void>();
+  public RegisteredUser$ = this.registeredUserSource.asObservable();
 
   private baseUrl = environment.baseUrl.split('/api')[0];
   constructor() {}
@@ -41,6 +44,7 @@ export class SignalrService {
   async startConnection(userId: string): Promise<void> {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${this.baseUrl}/chat`)
+      .configureLogging(signalR.LogLevel.None)
       .build();
 
     try {
@@ -91,6 +95,10 @@ export class SignalrService {
         this.editedMessageSource.next({ messageId, text });
       }
     );
+
+    this.hubConnection.on('RegisteredUser', () => {
+      this.registeredUserSource.next();
+    });
   }
 
   disconnect() {

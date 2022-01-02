@@ -8,7 +8,6 @@ import { LogginPersisterService } from './core/services/loggin-persister.service
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  title = 'client';
   constructor(private logginPersisterService: LogginPersisterService) {}
   ngOnInit(): void {
     if (TokenStorageHelper.getAccessToken()) {

@@ -6,7 +6,7 @@ import {
   RouterStateSnapshot,
   UrlTree,
 } from '@angular/router';
-import { map, Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { TokenStorageHelper } from '../helpers/token-storage.helper';
 import { LogginPersisterService } from '../services/loggin-persister.service';
 
@@ -18,33 +18,25 @@ export class AuthGuard implements CanActivate {
     private logginPersister: LogginPersisterService,
     private router: Router
   ) {}
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ):
-    | Observable<boolean | UrlTree>
-    | Promise<boolean | UrlTree>
-    | boolean
-    | UrlTree {
+  canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
     if (
-      route?.routeConfig?.path == 'auth' &&
+      route?.routeConfig?.path === 'auth' &&
       !TokenStorageHelper.getAccessToken()
     ) {
-      return true;
+      return of(true);
     } else if (
-      route?.routeConfig?.path == 'auth' &&
+      route?.routeConfig?.path === 'auth' &&
       TokenStorageHelper.getAccessToken()
     ) {
       this.router.navigate(['/dashboard']);
-      return false;
-    } else if (!TokenStorageHelper.getAccessToken()) {
-      this.router.navigate(['/auth/login']);
-      return false;
+    } else if (TokenStorageHelper.getAccessToken()) {
+      return of(true);
     }
-    return this.logginPersister.LoggedUser.pipe(
-      map((user) => {
-        return !!user;
-      })
-    );
+    return of(false);
+    // return this.logginPersister.LoggedUser$.pipe(
+    //   map((user) => {
+    //     return !!user;
+    //   })
+    // );
   }
 }

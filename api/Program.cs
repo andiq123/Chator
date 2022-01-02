@@ -28,5 +28,7 @@ app.UseStaticFiles();
 
 
 app.MapControllers();
+app.MapFallbackToController("Index", "Fallback");
 app.MapHub<ChatHub>("/chat");
+
 app.Run();

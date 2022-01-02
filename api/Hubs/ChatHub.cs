@@ -9,12 +9,13 @@ public class ChatHub : Hub
         var connectionId = Context.ConnectionId;
         // add user to list
         Presence.AddUser(userId, connectionId);
-
+        System.Console.WriteLine("User connected: " + userId);
         // send to other users
         await Clients.Others.SendAsync("UserConnected", userId);
 
         var users = Presence.GetConnectedUsers();
         await Clients.Caller.SendAsync("GetAllUsersOnline", users);
+        System.Console.WriteLine("Users connected " + users.Count);
     }
     public override async Task OnDisconnectedAsync(Exception? ex)
     {
@@ -24,6 +25,8 @@ public class ChatHub : Hub
 
         // send to other users
         await Clients.Others.SendAsync("UserDisconnected", userId);
+        var users = Presence.GetConnectedUsers();
+        System.Console.WriteLine("Users connected " + users.Count);
     }
 
 

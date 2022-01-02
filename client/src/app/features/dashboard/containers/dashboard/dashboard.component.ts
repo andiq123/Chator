@@ -1,5 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { firstValueFrom, Observable } from 'rxjs';
+import {
+  firstValueFrom,
+  lastValueFrom,
+  Observable,
+  Subscription,
+  take,
+} from 'rxjs';
 import { LogginPersisterService } from 'src/app/core/services/loggin-persister.service';
 import { SignalrService } from 'src/app/core/services/signalr.service';
 import { SnackBarService } from 'src/app/core/services/snack-bar.service';
@@ -15,6 +21,7 @@ import { UsersService } from '../../services/users.service';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
+  subscriptions: Subscription[] = [];
   public User$!: Observable<User | null>;
   users: User[] = [];
 
@@ -30,16 +37,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnDestroy() {
-    const user = await firstValueFrom(this.User$);
     this.signalrService.disconnect();
+    this.subscriptions.forEach((x) => x.unsubscribe());
   }
 
   async ngOnInit() {
-    this.User$ = this.loginPersister.LoggedUser;
+    this.User$ = this.loginPersister.LoggedUser$;
     this.populateUsers();
-    const user = await firstValueFrom(this.User$);
-    await this.signalrService.startConnection(user.id);
-    this.listenForSignalrActions();
+    this.subscriptions.push(
+      this.User$.subscribe((user) => {
+        if (!user) return;
+        this.signalrService.startConnection(user.id);
+        this.listenForSignalrActions();
+      })
+    );
   }
 
   populateUsers() {
@@ -63,8 +74,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.sortUsers();
     });
 
-    this.signalrService.usersConnected$.subscribe((users) => {
-      console.log(users);
+    this.signalrService.UsersConnected$.subscribe((users) => {
       this.mapConnectedUsers(users);
     });
 
@@ -84,6 +94,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.signalrService.EditedMessage$.subscribe(({ messageId, text }) => {
       this.updateMessage(messageId, text);
+    });
+
+    this.signalrService.RegisteredUser$.subscribe(() => {
+      this.populateUsers();
+      this.snackBar.info('A new user registered');
     });
   }
 
@@ -129,6 +144,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.otherUser = undefined;
       return;
     }
+
     this.otherUser = user;
     this.loadMessages();
 

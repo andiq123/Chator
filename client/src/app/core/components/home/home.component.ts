@@ -13,6 +13,6 @@ export class HomeComponent implements OnInit {
   constructor(private logginPersister: LogginPersisterService) {}
 
   ngOnInit(): void {
-    this.User$ = this.logginPersister.LoggedUser;
+    this.User$ = this.logginPersister.LoggedUser$;
   }
 }
