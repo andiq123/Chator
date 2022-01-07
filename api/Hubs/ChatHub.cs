@@ -9,7 +9,7 @@ public class ChatHub : Hub
         var connectionId = Context.ConnectionId;
         // add user to list
         Presence.AddUser(userId, connectionId);
-        System.Console.WriteLine("User connected: " + userId);
+
         // send to other users
         await Clients.Others.SendAsync("UserConnected", userId);
 

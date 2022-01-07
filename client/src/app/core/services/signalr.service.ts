@@ -38,12 +38,11 @@ export class SignalrService {
   private registeredUserSource = new Subject<void>();
   public RegisteredUser$ = this.registeredUserSource.asObservable();
 
-  private baseUrl = environment.baseUrl.split('/api')[0];
   constructor() {}
 
   async startConnection(userId: string): Promise<void> {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${this.baseUrl}/chat`)
+      .withUrl(`/chat`)
       .configureLogging(signalR.LogLevel.None)
       .build();
 

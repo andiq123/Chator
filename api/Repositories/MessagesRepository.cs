@@ -14,13 +14,13 @@ public class MessagesRepository : IMessagesRepository
     {
         var msg = new Message
         {
-            Created = DateTime.Now,
+            Created = DateTime.Now.ToUniversalTime(),
             Text = message.Text,
             RecieverId = message.RecieverId,
             SenderId = loggedUserId,
         };
         await _context.Messages.AddAsync(msg);
-        if (await _context.SaveChangesAsync() == 0) throw new Exception("Message not added");
+        await _context.SaveChangesAsync();
         return msg;
     }
 

@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_USER: appuser
+    ports:
+      - 5432:5432
+
+  frontend:
+    build: ./
+    ports:
+      - 5299:5299
+    environment:
+      ASPNETCORE_URLS: http://+:5299
+      ConnectionStrings__DefaultConnection: Server=db; Port=5432; User id=appuser; Password=secret; Database=ChatApp
+      AppSettings__Token: Super ultra secure key for Testing123
+
+    depends_on:
+      - db
