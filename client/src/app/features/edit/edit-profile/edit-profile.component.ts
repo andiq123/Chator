@@ -39,7 +39,14 @@ export class EditProfileComponent implements OnInit {
   createForm() {
     // create the form to edit the user using form builder
     this.formGroup = this.fb.group({
-      username: [this.LoggedUser.userName, Validators.required],
+      username: [
+        this.LoggedUser.userName,
+        [
+          Validators.required,
+          Validators.minLength(6),
+          Validators.maxLength(20),
+        ],
+      ],
       description: [this.LoggedUser.description, Validators.required],
     });
   }
@@ -72,8 +79,8 @@ export class EditProfileComponent implements OnInit {
         this.logginPersiter.setLoggedUser(user);
         this.snackBar.success('Profile updated successfully');
       },
-      error: () => {
-        this.snackBar.error("Error updating user's profile");
+      error: (e) => {
+        this.snackBar.error(e.error.message);
       },
     });
   }

@@ -35,9 +35,8 @@ public class AuthRepository : IAuthRepository
         var result = await _userManager.CreateAsync(userToCreate, userToCreateDto.Password);
         if (result.Errors.Count() > 0)
         {
-            throw new Exception(String.Join(",", result.Errors));
+            throw new Exception("Password too weak");
         }
-
 
         var userFromDb = await _userManager.FindByNameAsync(userToCreate.UserName);
         return new TokenResponseViewModel() { Token = _tokenService.GenerateToken(userFromDb) };

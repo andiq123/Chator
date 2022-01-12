@@ -14,6 +14,7 @@ public static class ImageHelper
     //create a image from IFormFile
     public static string CreateImage(IFormFile file)
     {
+        CreateFolderIfNotExists();
         string imageName = Guid.NewGuid().ToString() + ".jpg";
         string path = GetFullImagePath(imageName);
         using (var stream = new FileStream(path, FileMode.Create))
@@ -26,10 +27,20 @@ public static class ImageHelper
     //remove a image 
     public static void RemoveImage(string imageName)
     {
+        CreateFolderIfNotExists();
         string path = GetFullImagePath(imageName);
         if (System.IO.File.Exists(path))
         {
             System.IO.File.Delete(path);
+        }
+    }
+
+    private static void CreateFolderIfNotExists()
+    {
+        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
         }
     }
 }

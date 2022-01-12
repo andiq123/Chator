@@ -6,10 +6,11 @@ public static class IdentityServices
     {
         services.AddIdentityCore<User>(options =>
         {
-            options.Password.RequireDigit = true;
-            options.Password.RequiredLength = 8;
+            options.Password.RequiredLength = 10;
+            options.Password.RequireLowercase = true;
             options.Password.RequireUppercase = true;
-            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequireDigit = true;
+            options.Password.RequireNonAlphanumeric = true;
         }).AddEntityFrameworkStores<DataContext>().AddSignInManager<SignInManager<User>>();
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

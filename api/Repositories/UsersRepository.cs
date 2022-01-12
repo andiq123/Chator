@@ -34,8 +34,18 @@ public class UsersRepository : IUsersRepository
     public async Task<UserViewModel> UpdateUserAsync(string userId, UserToUpdateDto userToUpdateDto)
     {
         var user = await GetUserRawAsync(userId);
-        user.UserName = userToUpdateDto.Username ?? user.UserName;
-        user.Description = userToUpdateDto.Description ?? user.Description;
+        if (!string.IsNullOrEmpty(userToUpdateDto.Username) && string.IsNullOrEmpty(userToUpdateDto.Photo))
+        {
+            var checkIfUsernameExists = await _userManager.FindByNameAsync(userToUpdateDto.Username);
+            if (checkIfUsernameExists != null && checkIfUsernameExists.Id != userId)
+            {
+                throw new Exception("Username already exists");
+            }
+            user.UserName = userToUpdateDto.Username ?? user.UserName;
+            user.Description = userToUpdateDto.Description ?? user.Description;
+        }
+
+
         user.PhotoUrl = userToUpdateDto.Photo ?? user.PhotoUrl;
         await _userManager.UpdateAsync(user);
         return _mapper.Map<User, UserViewModel>(user);

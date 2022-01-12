@@ -13,6 +13,7 @@ import { LogginPersisterService } from './loggin-persister.service';
 export class SignalrService {
   private hubConnection?: signalR.HubConnection;
   private usersConnected: string[] = [];
+  private baseUrl = environment.baseUrl;
 
   private deletedMessageSource = new Subject<string>();
   public DeletedMessage$ = this.deletedMessageSource.asObservable();
@@ -42,7 +43,7 @@ export class SignalrService {
 
   async startConnection(userId: string): Promise<void> {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`/chat`)
+      .withUrl(`${this.baseUrl}/chat`)
       .configureLogging(signalR.LogLevel.None)
       .build();
 

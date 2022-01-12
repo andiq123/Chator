@@ -19,24 +19,25 @@ export class AuthGuard implements CanActivate {
     private router: Router
   ) {}
   canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
-    if (
+    //conditions
+    const isLoggedIn = TokenStorageHelper.getAccessToken();
+
+    const isNotLoggedAndEntersLoginPage =
       route?.routeConfig?.path === 'auth' &&
-      !TokenStorageHelper.getAccessToken()
-    ) {
+      !TokenStorageHelper.getAccessToken();
+
+    const isLoggedAndEntersLoginPage =
+      route?.routeConfig?.path === 'auth' &&
+      TokenStorageHelper.getAccessToken();
+
+    if (isNotLoggedAndEntersLoginPage) {
       return of(true);
-    } else if (
-      route?.routeConfig?.path === 'auth' &&
-      TokenStorageHelper.getAccessToken()
-    ) {
+    } else if (isLoggedAndEntersLoginPage) {
       this.router.navigate(['/dashboard']);
-    } else if (TokenStorageHelper.getAccessToken()) {
+    } else if (isLoggedIn) {
       return of(true);
     }
+    this.router.navigate(['/']);
     return of(false);
-    // return this.logginPersister.LoggedUser$.pipe(
-    //   map((user) => {
-    //     return !!user;
-    //   })
-    // );
   }
 }

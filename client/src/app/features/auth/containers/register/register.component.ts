@@ -6,7 +6,6 @@ import { LogginPersisterService } from 'src/app/core/services/loggin-persister.s
 import { SnackBarService } from 'src/app/core/services/snack-bar.service';
 import { PasswordValidators } from 'src/app/core/_validators/password.validator';
 import { AuthResponse } from 'src/app/shared/models/auth-response.interface';
-import { InputField } from 'src/app/shared/models/input-field.interface';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -30,7 +29,7 @@ export class RegisterComponent implements OnInit {
   }
 
   submit() {
-    this.snackBar.info('Registering...');
+    // this.snackBar.info('Registering...');
     this.authService.register(this.formGroup.value).subscribe({
       next: (data: AuthResponse) => {
         TokenStorageHelper.setAccessToken(data.token);
@@ -38,8 +37,8 @@ export class RegisterComponent implements OnInit {
         this.router.navigate(['/dashboard']);
         this.snackBar.success('Registered and Logged In');
       },
-      error: () => {
-        this.snackBar.error('User already exist');
+      error: (e) => {
+        this.snackBar.error(e.error.message);
       },
     });
   }

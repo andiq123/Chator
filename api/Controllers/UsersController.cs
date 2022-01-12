@@ -1,5 +1,3 @@
-
-
 namespace api.Controllers;
 
 [Authorize]
@@ -14,40 +12,26 @@ public class UsersController : BaseController
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<UserViewModel>>> GetUsersAsync()
     {
-        try
-        {
-            var loggedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var users = await _usersRepository.GetUsersAsync(loggedUserId);
-            return Ok(users);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var loggedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var users = await _usersRepository.GetUsersAsync(loggedUserId);
+        return Ok(users);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<UserViewModel>> GetUserAsync(string id)
     {
-        try
-        {
-            var user = await _usersRepository.GetUserAsync(id);
-            return user;
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var user = await _usersRepository.GetUserAsync(id);
+        return user;
     }
 
     [HttpPost("photo")]
     public async Task<IActionResult> photoTest()
     {
         var file = Request.Form.Files[0];
-        if (file == null) return BadRequest("No Image was provided");
+        if (file == null) return BadRequest(new ApiException(400, "No Image was provided"));
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = await _usersRepository.GetUserAsync(userId);
-        if (user == null) return NotFound("User not found");
+        if (user == null) return NotFound(new ApiException(404, "User not found"));
 
         if (!string.IsNullOrEmpty(user.PhotoUrl))
             ImageHelper.RemoveImage(user.PhotoUrl);
@@ -70,15 +54,9 @@ public class UsersController : BaseController
         {
             return Unauthorized();
         }
-        try
-        {
-            var user = await _usersRepository.UpdateUserAsync(id, userToUpdateDto);
-            return Ok(user);
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+
+        var user = await _usersRepository.UpdateUserAsync(id, userToUpdateDto);
+        return Ok(user);
     }
 
     [HttpGet("loggedUser")]

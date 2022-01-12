@@ -20,3 +20,4 @@ global using Microsoft.AspNetCore.Authorization;
 global using api.Helpers;
 global using Microsoft.AspNetCore.SignalR;
 global using api.Hubs;
+global using api.Middleware;

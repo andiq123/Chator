@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { TokenStorageHelper } from 'src/app/core/helpers/token-storage.helper';
 import { LogginPersisterService } from 'src/app/core/services/loggin-persister.service';
 import { SnackBarService } from 'src/app/core/services/snack-bar.service';
+import { PasswordValidators } from 'src/app/core/_validators/password.validator';
 import { AuthResponse } from 'src/app/shared/models/auth-response.interface';
 import { AuthService } from '../../services/auth.service';
 
@@ -39,31 +40,41 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/dashboard']);
         this.snackBar.success('Logged In');
       },
-      error: () => {
-        this.snackBar.error('Credentials Incorrect');
+      error: (e) => {
+        this.snackBar.error(e.error.message);
       },
     });
   }
 
   createForm() {
-    this.formGroup = this.fb.group({
-      username: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(4),
-          Validators.maxLength(10),
+    this.formGroup = this.fb.group(
+      {
+        username: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(5),
+            Validators.maxLength(10),
+          ],
         ],
-      ],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(6),
-          Validators.maxLength(10),
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(6),
+            Validators.maxLength(10),
+          ],
         ],
-      ],
-      rememberMe: [false],
-    });
+        rememberMe: [false],
+      },
+      {
+        validators: [
+          PasswordValidators.AtLeastASpecialCharacter,
+          PasswordValidators.AtLeastOneNumber,
+          PasswordValidators.AtLeastABigLetter,
+          PasswordValidators.AtLeastALowerCaseLetter,
+        ],
+      }
+    );
   }
 }

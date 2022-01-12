@@ -1,5 +1,3 @@
-
-
 namespace api.Controllers;
 
 public class FallBackController : BaseController
