@@ -28,6 +28,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   otherUser?: User;
   messages: Message[] = [];
 
+  otherUserIsTyping = false;
+
   constructor(
     private userService: UsersService,
     private loginPersister: LogginPersisterService,
@@ -99,6 +101,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.signalrService.RegisteredUser$.subscribe(() => {
       this.populateUsers();
       this.snackBar.info('A new user registered');
+    });
+
+    this.signalrService.IsWriting$.subscribe((status) => {
+      this.otherUserIsTyping = status;
     });
   }
 
@@ -173,6 +179,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
         );
         this.snackBar.success('Message edited');
       });
+  }
+
+  timeout = null;
+  onTyping() {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
+
+    this.setIsWriting(true);
+
+    this.timeout = setTimeout(() => {
+      this.setIsWriting(false);
+    }, 500);
+  }
+
+  setIsWriting(status: boolean) {
+    this.signalrService.setIsWriting(this.otherUser.id, status);
   }
 
   //private methods for signalr handlers

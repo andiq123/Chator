@@ -3,9 +3,12 @@
         <div class="header">
             <div class="info">
                 {{ otherUser.userName | titlecase}}
-                <mat-icon> chat</mat-icon>
+                <div class="isTyping">
+                    <mat-icon *ngIf="otherUserIsTyping">mode_edit</mat-icon>
+                </div>
                 Status:
                 {{otherUser.description | titlecase}}
+
             </div>
         </div>
         <div class="messages-shower" #messageShower>
@@ -17,7 +20,7 @@
         <br />
         <div class="messages-sender">
             <input matInput type="text" placeholder="Enter your message here..." [(ngModel)]="message"
-                (keydown.enter)="onSubmitForm()">
+                (keydown.enter)="onSubmitForm()" (input)="onInput()">
             <button mat-raised-button [disabled]="!message" (click)="onSubmitForm()">Send</button>
         </div>
     </mat-card-content>

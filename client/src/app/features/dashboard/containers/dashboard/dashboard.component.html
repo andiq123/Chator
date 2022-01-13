@@ -11,7 +11,7 @@
     <div *ngIf="User$ | async as user">
         <app-talk-section *ngIf="otherUser" [user]="user" [otherUser]="otherUser" [messages]="messages"
             (onDeleteMessage)="deleteMessageReq($event)" (onEditMessage)="editMessage($event)"
-            (onMessageSent)="onSubmitMessage($event)">
+            (onMessageSent)="onSubmitMessage($event)" (onTyping)="onTyping()" [otherUserIsTyping]="otherUserIsTyping">
         </app-talk-section>
     </div>
 

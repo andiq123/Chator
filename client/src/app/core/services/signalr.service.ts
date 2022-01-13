@@ -39,6 +39,9 @@ export class SignalrService {
   private registeredUserSource = new Subject<void>();
   public RegisteredUser$ = this.registeredUserSource.asObservable();
 
+  private isWritingSource = new Subject<boolean>();
+  public IsWriting$ = this.isWritingSource.asObservable();
+
   constructor() {}
 
   async startConnection(userId: string): Promise<void> {
@@ -99,6 +102,10 @@ export class SignalrService {
     this.hubConnection.on('RegisteredUser', () => {
       this.registeredUserSource.next();
     });
+
+    this.hubConnection.on('isWriting', (status) => {
+      this.isWritingSource.next(status);
+    });
   }
 
   disconnect() {
@@ -117,5 +124,9 @@ export class SignalrService {
 
   editMessage(userId: string, messageId: string, text: string) {
     this.hubConnection?.invoke('EditMessage', userId, messageId, text);
+  }
+
+  setIsWriting(userId: string, status: boolean) {
+    this.hubConnection?.invoke('SetIsWriting', userId, status);
   }
 }

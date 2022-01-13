@@ -33,10 +33,12 @@ export class TalkSectionComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() otherUser!: User;
   @Input() user!: User;
   @Input() messages: Message[] = [];
+  @Input() otherUserIsTyping = false;
   @Output() onMessageSent = new EventEmitter<MessageToAddDto>();
   @ViewChild('messageShower') messageContainer!: ElementRef;
   @Output() onDeleteMessage: EventEmitter<string> = new EventEmitter<string>();
   @Output() onEditMessage: EventEmitter<Message> = new EventEmitter<Message>();
+  @Output() onTyping: EventEmitter<void> = new EventEmitter();
   message: string = '';
 
   constructor() {}
@@ -64,6 +66,10 @@ export class TalkSectionComponent implements OnInit, AfterViewInit, OnChanges {
 
   editMessage(message: Message) {
     this.onEditMessage.next(message);
+  }
+
+  onInput() {
+    this.onTyping.emit();
   }
 
   ngAfterViewInit(): void {
