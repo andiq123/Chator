@@ -29,7 +29,7 @@ export class RegisterComponent implements OnInit {
   }
 
   submit() {
-    // this.snackBar.info('Registering...');
+    this.snackBar.info('Registering...');
     this.authService.register(this.formGroup.value).subscribe({
       next: (data: AuthResponse) => {
         TokenStorageHelper.setAccessToken(data.token);
@@ -60,7 +60,7 @@ export class RegisterComponent implements OnInit {
           '',
           [
             Validators.required,
-            Validators.minLength(6),
+            Validators.minLength(8),
             Validators.maxLength(20),
           ],
         ],
@@ -68,7 +68,7 @@ export class RegisterComponent implements OnInit {
           '',
           [
             Validators.required,
-            Validators.minLength(6),
+            Validators.minLength(8),
             Validators.maxLength(20),
           ],
         ],

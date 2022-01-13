@@ -6,7 +6,7 @@ public static class IdentityServices
     {
         services.AddIdentityCore<User>(options =>
         {
-            options.Password.RequiredLength = 10;
+            options.Password.RequiredLength = 8;
             options.Password.RequireLowercase = true;
             options.Password.RequireUppercase = true;
             options.Password.RequireDigit = true;

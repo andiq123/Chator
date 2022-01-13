@@ -4,6 +4,12 @@
   flex-flow: row wrap;
   justify-content: space-between;
   gap: 5px;
+  .idle {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    animation: idle-anim 3s 2s ease-in-out alternate infinite;
+  }
   app-users {
     flex: 0.2;
     margin: 0;
@@ -17,5 +23,15 @@
       width: 100%;
       height: 100%;
     }
+  }
+}
+
+@keyframes idle-anim {
+  from {
+    transform: translate(-50%, 0);
+  }
+
+  to {
+    transform: translate(-50%, 30%);
   }
 }

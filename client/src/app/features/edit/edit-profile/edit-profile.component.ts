@@ -43,7 +43,7 @@ export class EditProfileComponent implements OnInit {
         this.LoggedUser.userName,
         [
           Validators.required,
-          Validators.minLength(6),
+          Validators.minLength(5),
           Validators.maxLength(20),
         ],
       ],
@@ -60,8 +60,8 @@ export class EditProfileComponent implements OnInit {
         this.logginPersiter.setLoggedUser(user);
         this.snackBar.success('Profile image updated successfully');
       },
-      error: () => {
-        this.snackBar.error("Error updating user's profile");
+      error: (e) => {
+        this.snackBar.error(e.error.message);
       },
     });
   }

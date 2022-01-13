@@ -1,9 +1,18 @@
 <div class="dashboard">
-    <app-users [users]="users" (onSelectUser)="onSelectUser($event)"></app-users>
+    <mat-card *ngIf="!users || users.length === 0" class="idle">
+        <mat-card-title>
+            <h2>No one is around...</h2>
+        </mat-card-title>
+        <mat-card-content>
+            <p>Nobody registered yet, waiting...</p>
+        </mat-card-content>
+    </mat-card>
+    <app-users *ngIf="users.length > 0" [users]="users" (onSelectUser)="onSelectUser($event)"></app-users>
     <div *ngIf="User$ | async as user">
         <app-talk-section *ngIf="otherUser" [user]="user" [otherUser]="otherUser" [messages]="messages"
             (onDeleteMessage)="deleteMessageReq($event)" (onEditMessage)="editMessage($event)"
             (onMessageSent)="onSubmitMessage($event)">
         </app-talk-section>
     </div>
+
 </div>

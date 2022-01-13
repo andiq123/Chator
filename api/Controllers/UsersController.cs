@@ -3,24 +3,25 @@ namespace api.Controllers;
 [Authorize]
 public class UsersController : BaseController
 {
-    private readonly IUsersRepository _usersRepository;
-    public UsersController(IUsersRepository usersRepository)
+    private readonly IUnitOfWork _unitOfWork;
+
+    public UsersController(IUnitOfWork unitOfWork)
     {
-        _usersRepository = usersRepository;
+        _unitOfWork = unitOfWork;
     }
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<UserViewModel>>> GetUsersAsync()
     {
         var loggedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var users = await _usersRepository.GetUsersAsync(loggedUserId);
+        var users = await _unitOfWork.Users.GetUsersAsync(loggedUserId);
         return Ok(users);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<UserViewModel>> GetUserAsync(string id)
     {
-        var user = await _usersRepository.GetUserAsync(id);
+        var user = await _unitOfWork.Users.GetUserAsync(id);
         return user;
     }
 
@@ -30,7 +31,7 @@ public class UsersController : BaseController
         var file = Request.Form.Files[0];
         if (file == null) return BadRequest(new ApiException(400, "No Image was provided"));
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        var user = await _usersRepository.GetUserAsync(userId);
+        var user = await _unitOfWork.Users.GetUserAsync(userId);
         if (user == null) return NotFound(new ApiException(404, "User not found"));
 
         if (!string.IsNullOrEmpty(user.PhotoUrl))
@@ -41,7 +42,7 @@ public class UsersController : BaseController
             Photo = ImageHelper.CreateImage(file)
         };
 
-        var userUpdated = await _usersRepository.UpdateUserAsync(userId, userToUpdate);
+        var userUpdated = await _unitOfWork.Users.UpdateUserAsync(userId, userToUpdate);
         return Ok(userUpdated);
     }
 
@@ -55,22 +56,15 @@ public class UsersController : BaseController
             return Unauthorized();
         }
 
-        var user = await _usersRepository.UpdateUserAsync(id, userToUpdateDto);
+        var user = await _unitOfWork.Users.UpdateUserAsync(id, userToUpdateDto);
         return Ok(user);
     }
 
     [HttpGet("loggedUser")]
     public async Task<ActionResult<UserViewModel>> GetUserByEmailAsync()
     {
-        try
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return Ok(await _usersRepository.GetUserAsync(userId));
-        }
-        catch (Exception ex)
-        {
-            return NotFound(ex.Message);
-        }
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return Ok(await _unitOfWork.Users.GetUserAsync(userId));
     }
 }
 
