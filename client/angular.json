@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "client": {
+    "chator": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -104,5 +104,5 @@
       }
     }
   },
-  "defaultProject": "client"
+  "defaultProject": "chator"
 }
