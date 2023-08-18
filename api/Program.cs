@@ -5,13 +5,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddGeneralService(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddIdentityServices(builder.Configuration);
+builder.WebHost.UseUrls("http://*:80");
 
 var app = builder.Build();
 
 // //Register middleware
 app.UseMiddleware<ExceptionMiddleware>();
 
-// app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseCors();
 
