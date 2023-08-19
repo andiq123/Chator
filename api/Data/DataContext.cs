@@ -7,8 +7,6 @@ public class DataContext : IdentityDbContext<User>
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(builder);
-
         var hasher = new PasswordHasher<User>();
 
         var user1 = new User
@@ -30,6 +28,7 @@ public class DataContext : IdentityDbContext<User>
         };
 
         builder.Entity<User>().HasData(user1, user2);
-    }
 
+        base.OnModelCreating(builder);
+    }
 }
