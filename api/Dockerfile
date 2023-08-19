@@ -8,8 +8,8 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
 # Restore .NET dependencies
-COPY ["api/api.csproj", "api/"]
-RUN dotnet restore "api/api.csproj"
+COPY ["api.csproj", "/"]
+RUN dotnet restore "api.csproj"
 
 # Copy everything else and build
 COPY . .
