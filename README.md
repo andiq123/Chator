@@ -1,2 +1,10 @@
 Web Chat App, used by no one!
-https://chator3.herokuapp.com/
+
+Users to test:
+user1
+Password1@
+
+user2
+Password1@
+
+https://chator-andyu789.b4a.run/
