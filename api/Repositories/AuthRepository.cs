@@ -15,14 +15,15 @@ public class AuthRepository : IAuthRepository
         _signInManager = signInManager;
     }
 
-
     public async Task<TokenResponseViewModel> Login(UserToLoginDto userToLoginDto)
     {
-        var user = await _userManager.FindByNameAsync(userToLoginDto.Username);
-        if (user == null) throw new Exception("User not found");
+        var user = await _userManager.FindByNameAsync(userToLoginDto.Username) ?? throw new Exception("User not found");
+
         var passwordCheck = await _signInManager.CheckPasswordSignInAsync(user, userToLoginDto.Password, false);
-        if (!passwordCheck.Succeeded) throw new Exception("User not found");
-        return new TokenResponseViewModel() { Token = _tokenService.GenerateToken(user) };
+
+        return !passwordCheck.Succeeded
+            ? throw new Exception("User not found")
+            : new TokenResponseViewModel() { Token = _tokenService.GenerateToken(user) };
     }
 
     public async Task<TokenResponseViewModel> Register(UserToCreateDto userToCreateDto)
@@ -33,7 +34,7 @@ public class AuthRepository : IAuthRepository
         var userToCreate = new User() { UserName = userToCreateDto.Username, Description = userToCreateDto.Description };
 
         var result = await _userManager.CreateAsync(userToCreate, userToCreateDto.Password);
-        if (result.Errors.Count() > 0)
+        if (result.Errors.Any())
         {
             throw new Exception("Password too weak");
         }

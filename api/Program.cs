@@ -30,8 +30,8 @@ try
     var context = services.GetRequiredService<DataContext>();
     var userManageer = services.GetRequiredService<UserManager<User>>();
 
-    await SeedUsers.Seed(userManageer);
     await context.Database.MigrateAsync();
+    await SeedUsers.Seed(userManageer);
 }
 catch (Exception ex)
 {
