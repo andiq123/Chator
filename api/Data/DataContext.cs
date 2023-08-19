@@ -17,7 +17,7 @@ public class DataContext : IdentityDbContext<User>
             UserName = "user1",
             NormalizedUserName = "USER1",
             Description = "I am the user 1",
-            PasswordHash = hasher.HashPassword(null, "Password")
+            PasswordHash = hasher.HashPassword(null, "Password1@")
         };
 
         var user2 = new User
@@ -26,7 +26,7 @@ public class DataContext : IdentityDbContext<User>
             UserName = "user2",
             NormalizedUserName = "USER2",
             Description = "I am the user 2",
-            PasswordHash = hasher.HashPassword(null, "Password") 
+            PasswordHash = hasher.HashPassword(null, "Password1@") 
         };
 
         builder.Entity<User>().HasData(user1, user2);
